@@ -20,9 +20,7 @@ const Datasets1 = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    if (variableValue === "") {
-      setError(true);
-    }
+
     console.log({
       variable: data.get("variable"),
       error: error,
