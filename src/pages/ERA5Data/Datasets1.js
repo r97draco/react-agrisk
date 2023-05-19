@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import { FormGroup, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -11,16 +11,11 @@ import FormHelperText from "@mui/material/FormHelperText";
 import "../../App.css";
 import { FormControl, FormLabel } from "@mui/material";
 
-
+const Variable = [];
 
 const Datasets1 = () => {
-  const [error, setError] = React.useState(false);
-  const [variableValue, setVariableValue] = React.useState("");
-
-  const handleRadioChange = (event) => {
-    setVariableValue(event.target.value);
-    setError(false);
-  };
+  const [error, setError] = useState(false);
+  const [variableValue, setVariableValue] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -32,9 +27,6 @@ const Datasets1 = () => {
       variable: data.get("variable"),
       error: error,
     });
-  };
-  const handleVariable = () => {
-    setVariableValue("");
   };
 
   return (
@@ -48,43 +40,17 @@ const Datasets1 = () => {
           noValidate
           alignContent="center"
           justifyContent="center"
-          // className="p-2 rounded-md shadow-lg bg-gray-50"
         >
           <FormControl error={error}>
-            <Box className="p-2 mb-3 rounded-md shadow-lg bg-gray-50 ">
-              <Typography>Variable</Typography>
-              <FormLabel>At least one selection must be made</FormLabel>
-              <RadioGroup
-                row
-                name="variable"
-                onChange={handleRadioChange}
-                value={variableValue}
-                defaultValue=""
-              >
-                {Variable.map((item, index) => (
-                  <FormControlLabel
-                    key={index}
-                    value={item}
-                    className="w-full p-2 lg:w-1/4 md:w-1/3 sm:w-1/2"
-                    control={<Radio />}
-                    label={item}
-                  />
-                ))}
-              </RadioGroup>
-              <Button className="left-0" onClick={handleVariable}>
-                Clear All
-              </Button>
-            </Box>
-            
-            
-            <StatisticComponent/>      
+            <VariableSelection />
+            <StatisticComponent />
             <YearComponent />
             <MonthComponent />
-            <DayComponent/>
+            <DayComponent />
             <TimeComponent />
             <GeographicalAreaComponent />
             <FormatComponent />
-            
+
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
               Submit
             </Button>
@@ -124,9 +90,11 @@ const MonthComponent = () => {
   }
 
   function handleMonthSelection(month) {
-    setSelectedMonths(prevSelectedMonths => {
+    setSelectedMonths((prevSelectedMonths) => {
       if (prevSelectedMonths.includes(month)) {
-        return prevSelectedMonths.filter(selectedMonth => selectedMonth !== month);
+        return prevSelectedMonths.filter(
+          (selectedMonth) => selectedMonth !== month
+        );
       } else {
         return [...prevSelectedMonths, month];
       }
@@ -163,7 +131,6 @@ const MonthComponent = () => {
   );
 };
 
-
 const DayComponent = () => {
   const days = [...Array(31).keys()].map((day) => day + 1);
 
@@ -178,9 +145,9 @@ const DayComponent = () => {
   }
 
   function handleDaySelection(day) {
-    setSelectedDays(prevSelectedDays => {
+    setSelectedDays((prevSelectedDays) => {
       if (prevSelectedDays.includes(day)) {
-        return prevSelectedDays.filter(selectedDay => selectedDay !== day);
+        return prevSelectedDays.filter((selectedDay) => selectedDay !== day);
       } else {
         return [...prevSelectedDays, day];
       }
@@ -217,7 +184,6 @@ const DayComponent = () => {
   );
 };
 
-
 const TimeComponent = () => {
   const times = ["06:00", "09:00", "12:00", "15:00", "18:00"];
 
@@ -232,9 +198,11 @@ const TimeComponent = () => {
   }
 
   function handleTimeSelection(time) {
-    setSelectedTimes(prevSelectedTimes => {
+    setSelectedTimes((prevSelectedTimes) => {
       if (prevSelectedTimes.includes(time)) {
-        return prevSelectedTimes.filter(selectedTime => selectedTime !== time);
+        return prevSelectedTimes.filter(
+          (selectedTime) => selectedTime !== time
+        );
       } else {
         return [...prevSelectedTimes, time];
       }
@@ -274,7 +242,9 @@ const TimeComponent = () => {
 const YearComponent = () => {
   const startYear = 1979;
   const endYear = 2022;
-  const years = [...Array(endYear - startYear + 1)].map((_, index) => startYear + index);
+  const years = [...Array(endYear - startYear + 1)].map(
+    (_, index) => startYear + index
+  );
 
   const [selectedYears, setSelectedYears] = useState([]);
 
@@ -299,9 +269,11 @@ const YearComponent = () => {
               <Checkbox
                 checked={selectedYears.includes(year)}
                 onChange={() => {
-                  setSelectedYears(prevSelectedYears => {
+                  setSelectedYears((prevSelectedYears) => {
                     if (prevSelectedYears.includes(year)) {
-                      return prevSelectedYears.filter(selectedYear => selectedYear !== year);
+                      return prevSelectedYears.filter(
+                        (selectedYear) => selectedYear !== year
+                      );
                     } else {
                       return [...prevSelectedYears, year];
                     }
@@ -358,9 +330,11 @@ const StatisticComponent = () => {
               <Checkbox
                 checked={selectedStatistics.includes(item)}
                 onChange={() => {
-                  setSelectedStatistics(prevSelectedStatistics => {
+                  setSelectedStatistics((prevSelectedStatistics) => {
                     if (prevSelectedStatistics.includes(item)) {
-                      return prevSelectedStatistics.filter(selectedStatistic => selectedStatistic !== item);
+                      return prevSelectedStatistics.filter(
+                        (selectedStatistic) => selectedStatistic !== item
+                      );
                     } else {
                       return [...prevSelectedStatistics, item];
                     }
@@ -384,29 +358,29 @@ const StatisticComponent = () => {
 };
 
 const GeographicalAreaComponent = () => {
-  const [areaOption, setAreaOption] = useState('wholeRegion');
-  const [north, setNorth] = useState('');
-  const [west, setWest] = useState('');
-  const [east, setEast] = useState('');
-  const [south, setSouth] = useState('');
+  const [areaOption, setAreaOption] = useState("wholeRegion");
+  const [north, setNorth] = useState("");
+  const [west, setWest] = useState("");
+  const [east, setEast] = useState("");
+  const [south, setSouth] = useState("");
 
-  const handleAreaOptionChange = event => {
+  const handleAreaOptionChange = (event) => {
     setAreaOption(event.target.value);
   };
 
-  const handleNorthChange = event => {
+  const handleNorthChange = (event) => {
     setNorth(event.target.value);
   };
 
-  const handleWestChange = event => {
+  const handleWestChange = (event) => {
     setWest(event.target.value);
   };
 
-  const handleEastChange = event => {
+  const handleEastChange = (event) => {
     setEast(event.target.value);
   };
 
-  const handleSouthChange = event => {
+  const handleSouthChange = (event) => {
     setSouth(event.target.value);
   };
 
@@ -415,11 +389,23 @@ const GeographicalAreaComponent = () => {
       <Typography>Geographical area</Typography>
       <FormLabel>At least one selection must be made</FormLabel>
 
-      <RadioGroup name="areaOption" value={areaOption} onChange={handleAreaOptionChange}>
-        <FormControlLabel value="wholeRegion" control={<Radio />} label="Whole available region" />
-        <FormControlLabel value="subRegion" control={<Radio />} label="Sub-region extraction" />
+      <RadioGroup
+        name="areaOption"
+        value={areaOption}
+        onChange={handleAreaOptionChange}
+      >
+        <FormControlLabel
+          value="wholeRegion"
+          control={<Radio />}
+          label="Whole available region"
+        />
+        <FormControlLabel
+          value="subRegion"
+          control={<Radio />}
+          label="Sub-region extraction"
+        />
       </RadioGroup>
-      {areaOption === 'subRegion' && (
+      {areaOption === "subRegion" && (
         <>
           <TextField label="North" value={north} onChange={handleNorthChange} />
           <TextField label="West" value={west} onChange={handleWestChange} />
@@ -432,9 +418,9 @@ const GeographicalAreaComponent = () => {
 };
 
 const FormatComponent = () => {
-  const [selectedFormat, setSelectedFormat] = useState('');
+  const [selectedFormat, setSelectedFormat] = useState("");
 
-  const handleFormatChange = event => {
+  const handleFormatChange = (event) => {
     setSelectedFormat(event.target.value);
   };
 
@@ -443,24 +429,88 @@ const FormatComponent = () => {
       <Typography>Format</Typography>
       <FormLabel>At least one selection must be made</FormLabel>
 
-      <RadioGroup name="format" value={selectedFormat} onChange={handleFormatChange} row>
-        <FormControlLabel value="zip" control={<Radio />} label="Zip file (.zip)" />
-        <FormControlLabel value="tar" control={<Radio />} label="Compressed tar file (.tar.gz)" />
+      <RadioGroup
+        name="format"
+        value={selectedFormat}
+        onChange={handleFormatChange}
+        row
+      >
+        <FormControlLabel
+          value="zip"
+          control={<Radio />}
+          label="Zip file (.zip)"
+        />
+        <FormControlLabel
+          value="tar"
+          control={<Radio />}
+          label="Compressed tar file (.tar.gz)"
+        />
       </RadioGroup>
     </Box>
   );
 };
-const Variable = [
-  "Cloud cover",
-  "Precipitation flux",
-  "Liquid precipitation duration fraction",
-  "Solid precipitation duration fraction",
-  "Snow thickness LWE",
-  "Snow thickness",
-  "Solar radiation flux",
-  "Vapour pressure",
-  "2m temperature",
-  "10m wind speed",
-  "2m dewpoint temperature",
-  "2m relative humidity",
-];
+
+const VariableSelection = () => {
+  const Variable = [
+    "Cloud cover",
+    "Precipitation flux",
+    "Liquid precipitation duration fraction",
+    "Solid precipitation duration fraction",
+    "Snow thickness LWE",
+    "Snow thickness",
+    "Solar radiation flux",
+    "Vapour pressure",
+    "2m temperature",
+    "10m wind speed",
+    "2m dewpoint temperature",
+    "2m relative humidity",
+  ];
+  const [selectedVariables, setSelectedVariables] = useState([]);
+
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+    if (checked) {
+      setSelectedVariables((prevSelectedVariables) => [
+        ...prevSelectedVariables,
+        value,
+      ]);
+    } else {
+      setSelectedVariables((prevSelectedVariables) =>
+        prevSelectedVariables.filter((variable) => variable !== value)
+      );
+    }
+  };
+
+  const handleSelectAll = () => {
+    setSelectedVariables(Variable);
+  };
+
+  const handleClearAll = () => {
+    setSelectedVariables([]);
+  };
+
+  return (
+    <Box className="p-2 mb-3 rounded-md shadow-lg bg-gray-50">
+      <Typography>Variable</Typography>
+      <FormLabel>At least one selection must be made</FormLabel>
+      <div>
+        {Variable.map((item, index) => (
+          <FormControlLabel
+            key={index}
+            value={item}
+            className="w-full p-2 lg:w-1/4 md:w-1/3 sm:w-1/2"
+            control={
+              <Checkbox
+                checked={selectedVariables.includes(item)}
+                onChange={handleCheckboxChange}
+              />
+            }
+            label={item}
+          />
+        ))}
+      </div>
+      <Button onClick={handleClearAll}>Clear All</Button>
+      <Button onClick={handleSelectAll}>Select All</Button>
+    </Box>
+  );
+};
