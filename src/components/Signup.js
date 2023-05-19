@@ -16,13 +16,15 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+
 import {
   validEmail,
   validPassword,
   validUsername,
   validName,
-} from "../utils/Regex";
-import { themeOptions } from "../utils/muiTheme";
+} from "../Utils/Regex";
+import { themeOptions } from "../Utils/MuiTheme";
 
 const theme = createTheme(themeOptions);
 
@@ -35,6 +37,12 @@ export default function SignUp({ setStatus }) {
   const [passwordText, setPasswordText] = React.useState("");
   const [confirmText, setConfirmText] = React.useState("");
   const [error, setError] = React.useState(false);
+  const [dob, setDob] = React.useState(dayjs("2002-01-01")); 
+
+  const handleDateChange = (date) => {
+    setDob(date);
+    setDobText(""); 
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -51,7 +59,7 @@ export default function SignUp({ setStatus }) {
       setUsernameText("Username is Incorrect");
       setError(true);
     }
-    if (data.get("dob") === "") {
+    if (dob === "" || dob.toString() === "Invalid Date") {
       setDobText("Date of Birth is not filled");
       setError(true);
     }
@@ -77,7 +85,8 @@ export default function SignUp({ setStatus }) {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
       email: data.get("email"),
-      DOB: data.get("dob"),
+      // DOB: data.get("dob"),
+      DOB: dob?dob.toString():"",
       username: data.get("username"),
       password: data.get("password"),
       confirm: data.get("confirm"),
@@ -96,7 +105,7 @@ export default function SignUp({ setStatus }) {
         <Container
           component="main"
           maxWidth="md"
-          className="items-stretch w-full min-h-full rounded-md shadow-lg backdrop-blur-md flex-grow-1 bg-slate-100"
+          className="items-stretch w-full min-h-full rounded-md shadow-lg flex-grow-1 bg-slate-100"
           sx={{
             flexGrow: 1, // Allow the container to grow and fill the available vertical space
             display: "flex",
@@ -164,21 +173,21 @@ export default function SignUp({ setStatus }) {
                   </Grid>
                   <Grid item xs={12} sm={6} lg={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        fullWidth
-                        required
-                        disableFuture
-                        id="dob"
-                        name="dob"
-                        label="Date of Birth"
-                        slotProps={{
-                          textField: { fullWidth: true },
-                          defaultValue: "01/01/2001",
-                        }}
-                        onChange={() => {
-                          setDobText("");
-                        }}
-                      />
+                      <FormControl fullWidth>
+                        <DatePicker
+                          required
+                          disableFuture
+                          id="dob"
+                          name="dob"
+                          label="Date of Birth"
+                          value={dob}
+                          onChange={handleDateChange}
+                          defaultValue={dayjs("2002-01-01")}
+                          renderInput={(params) => (
+                            <TextField {...params} fullWidth />
+                          )}
+                        />
+                      </FormControl>
                       <FormHelperText>{dobText}</FormHelperText>
                     </LocalizationProvider>
                   </Grid>

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
-import { themeOptions } from "./utils/muiTheme";
+import { themeOptions } from "./Utils/MuiTheme";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 const theme = createTheme(themeOptions);
 

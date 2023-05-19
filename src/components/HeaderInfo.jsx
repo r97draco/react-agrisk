@@ -6,7 +6,7 @@ import {  ExitToApp } from "@mui/icons-material";
 import { Routes, Route, Link, Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AUTH_ISLOGGEDIN } from "../App";
-import { useAuth } from "../utils/auth";
+import { useAuth } from "../Utils/Auth";
 
 const HeaderInfo = ({logout}) => {
   const [username, setUsername] = useState("login-individual");

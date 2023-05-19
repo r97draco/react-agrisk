@@ -16,12 +16,17 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
-import { ThemeOptions } from '@mui/material/styles';
-import { validEmail, validPassword, validUsername } from "../utils/Regex";
-import { Route, Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
+import { ThemeOptions } from "@mui/material/styles";
+import { validEmail, validPassword, validUsername } from "../Utils/Regex";
+import {
+  Route,
+  Link as RouterLink,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import "../App.css";
-import { themeOptions } from "../utils/muiTheme";
-import { useAuth } from "../utils/auth";
+import { themeOptions } from "../Utils/MuiTheme";
+import { useAuth } from "../Utils/Auth";
 
 const theme = createTheme(themeOptions);
 
@@ -31,46 +36,50 @@ export default function SignIn({ setStatus, setLoggedIn }) {
   const [passwordText, setPasswordText] = React.useState("");
   const [radio, setRadio] = React.useState("admin");
   const [error, setError] = React.useState(false);
-  const [user, setUser] = React.useState('');
+  const [user, setUser] = React.useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useAuth();
-  const redirectPath = location.state?.path || '/home'
+  const redirectPath = location.state?.path || "/home";
 
   const handleLogin = () => {
-    auth.login(user)
-    navigate(redirectPath, { replace: true })
-  }
+    auth.login(user);
+    navigate(redirectPath, { replace: true });
+  };
 
   const handleRadioChange = (event) => {
     setRadio(event.target.value);
     setRadioText("");
   };
   const handleCreateAccount = () => {
-    setStatus("signup")
+    setStatus("signup");
     navigate("/signup");
   };
 
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    let er= false;
+    let er = false;
     const data = new FormData(event.currentTarget);
-    console.log("pass---", data.get("password"),"---Validation-",validPassword.test(data.get("password")))
+    console.log(
+      "pass---",
+      data.get("password"),
+      "---Validation-",
+      validPassword.test(data.get("password"))
+    );
     if (radio === "") {
       setRadioText("Select User or Administrator");
-      er=true;
-    } 
+      er = true;
+    }
     if (!validUsername.test(data.get("username"))) {
       setUsernameText("Username is Incorrect");
-      er=true;
-    }  
+      er = true;
+    }
     if (!validPassword.test(data.get("password"))) {
       setPasswordText("Password is Incorrect");
-      er=true;
+      er = true;
     }
-    if(er)setError(true);
+    if (er) setError(true);
     console.log({
       username: data.get("username"),
       password: data.get("password"),
@@ -78,14 +87,16 @@ export default function SignIn({ setStatus, setLoggedIn }) {
       required: data.get("required"),
       error: error,
     });
-    if (validPassword.test(data.get("password")) && validUsername.test(data.get("username"))) {
+    if (
+      validPassword.test(data.get("password")) &&
+      validUsername.test(data.get("username"))
+    ) {
       setLoggedIn(true);
-      auth.login(data.get("username"))
-      navigate(redirectPath, { replace: true })
+      auth.login(data.get("username"));
+      navigate(redirectPath, { replace: true });
     }
   };
-  
-  
+
   return (
     <ThemeProvider theme={theme}>
       <div sx={{ width: 100 }}>
@@ -111,7 +122,7 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                   sx={{ p: 1, mb: 1, maxWidth: 800 }}
                   className="rounded-md bg-slate-100"
                 >
-                  <img 
+                  <img
                     src="./combine.png"
                     alt="map-image"
                     style={{ width: "auto", height: "auto" }}
@@ -132,14 +143,14 @@ export default function SignIn({ setStatus, setLoggedIn }) {
             </Grid>
             <Grid item sm>
               <Box className="w-full min-h-full rounded-md shadow-lg bg-slate-100">
-                <Container component="main" maxWidth="sm" >
+                <Container component="main" maxWidth="sm">
                   <CssBaseline />
                   <Box
                     sx={{
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
-                       pt: 6 ,
+                      pt: 6,
                     }}
                   >
                     <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
@@ -205,7 +216,7 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                                 setError(false);
                               }}
                             />
-                          <FormHelperText>{usernameText}</FormHelperText>
+                            <FormHelperText>{usernameText}</FormHelperText>
                           </Grid>
 
                           <Grid item xs={12}>
@@ -224,20 +235,22 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                                 setError(false);
                               }}
                             />
-                          <FormHelperText>{passwordText}</FormHelperText>
+                            <FormHelperText>{passwordText}</FormHelperText>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  defaultChecked
+                                  value="remember"
+                                  color="primary"
+                                />
+                              }
+                              label="Remember me"
+                              name="required"
+                            />
                           </Grid>
 
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                defaultChecked
-                                value="remember"
-                                color="primary"
-                              />
-                            }
-                            label="Remember me"
-                            name="required"
-                          />
                           <Grid item xs={12}>
                             <Button
                               type="submit"
@@ -265,16 +278,12 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                             </Grid>
                           </Grid>
 
-                          <Grid item xs={12}>
-                            
-                              <Link  variant="body2" >
-                              {/* <RouterLink to="/signup"> */}
-                              <Button onClick={handleCreateAccount}>
-
-                                  Don't have an account? Sign Up
+                          <Grid item xs={12} className="flex items-center justify-center w-full p-0 m-0">
+                            {/* <Link variant="body2"> */}
+                              <Button onClick={handleCreateAccount} variant="text" >
+                              Don't have an account? Sign Up
                               </Button>
-                            {/* </RouterLink> */}
-                              </Link>
+                            {/* </Link> */}
                           </Grid>
                         </Grid>
                       </FormControl>
