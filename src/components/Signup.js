@@ -21,7 +21,7 @@ import {
   validPassword,
   validUsername,
   validName,
-} from "../Regex";
+} from "../utils/Regex";
 import { themeOptions } from "../utils/muiTheme";
 
 const theme = createTheme(themeOptions);

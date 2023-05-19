@@ -17,7 +17,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import { ThemeOptions } from '@mui/material/styles';
-import { validEmail, validPassword, validUsername } from "../Regex";
+import { validEmail, validPassword, validUsername } from "../utils/Regex";
 import { Route, Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import "../App.css";
 import { themeOptions } from "../utils/muiTheme";
