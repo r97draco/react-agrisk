@@ -18,28 +18,10 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import { ThemeOptions } from '@mui/material/styles';
 import { validEmail, validPassword, validUsername } from "../Regex";
-import { Route, Link as RouterLink, useNavigate } from "react-router-dom";
+import { Route, Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import "../App.css";
 import { themeOptions } from "../utils/muiTheme";
-
-
-function Copyright(props) {
-  return (
-    <>
-      <Typography variant="body1" color="text.primary" align="center">
-        {"Copyright © "} {new Date().getFullYear()}
-        {" GARS / "}
-        <Link color="inherit" href="https://parametrics.ag/">
-          Parametrics.ag
-        </Link>
-      </Typography>
-      <Typography variant="body2" color="text.secondary" align="center">
-        All rights reserved | Privacy Policy
-      </Typography>
-    </>
-  );
-}
-
+import { useAuth } from "../utils/auth";
 
 const theme = createTheme(themeOptions);
 
@@ -49,8 +31,18 @@ export default function SignIn({ setStatus, setLoggedIn }) {
   const [passwordText, setPasswordText] = React.useState("");
   const [radio, setRadio] = React.useState("admin");
   const [error, setError] = React.useState(false);
+  const [user, setUser] = React.useState('');
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const auth = useAuth();
+  const redirectPath = location.state?.path || '/home'
+
+  const handleLogin = () => {
+    auth.login(user)
+    navigate(redirectPath, { replace: true })
+  }
+
   const handleRadioChange = (event) => {
     setRadio(event.target.value);
     setRadioText("");
@@ -87,12 +79,9 @@ export default function SignIn({ setStatus, setLoggedIn }) {
       error: error,
     });
     if (validPassword.test(data.get("password")) && validUsername.test(data.get("username"))) {
-      const timeout = setTimeout(() => {
-        navigate("/home");
-        console.log('Timeout logic executed');
-      }, 1);
       setLoggedIn(true);
-
+      auth.login(data.get("username"))
+      navigate(redirectPath, { replace: true })
     }
   };
   
@@ -210,7 +199,8 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                               autoComplete="username"
                               defaultValue="admin"
                               autoFocus
-                              onChange={() => {
+                              onChange={(e) => {
+                                setUser(e.target.value);
                                 setUsernameText("");
                                 setError(false);
                               }}
@@ -254,6 +244,7 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                               fullWidth
                               variant="contained"
                               sx={{ mt: 3, mb: 2 }}
+                              // onClick={handleLogin}
                             >
                               Sign In
                             </Button>

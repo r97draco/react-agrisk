@@ -16,11 +16,13 @@ import Datasets2 from "./pages/ERA5Data/Datasets2";
 import SignIn from "./components/Signin";
 import SignUp from "./components/Signup";
 import Sidebar from "./components/Sidebar";
-import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
 import EraIndex from "./pages/ERA5Data/EraIndex";
 import { themeOptions } from "./utils/muiTheme";
-
-
+import { AuthProvider, useAuth } from "./utils/auth";
+import { RequireAuth } from "./utils/RequireAuth";
+import { config } from "./utils/layoutConfig";
+import Home from "./pages/Home";
 
 const theme = createTheme(themeOptions);
 
@@ -30,149 +32,108 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useAtom(AUTH_ISLOGGEDIN);
   const [status, setStatus] = useState("signin");
   const navigate = useNavigate();
-  // if (!isLoggedIn) {
-  //   if (status === "signin") {
-  //     navigate("/");
-  //   } else {
-  //     navigate("/signup");
-  //   }
-  // }
+  const auth = useAuth();
   const handleLogout = () => {
     setIsLoggedIn(false);
-    navigate("/");
+    auth.logout()
+    navigate('/')
   };
 
   return (
     <MuiThemeProvider theme={theme}>
-    <Root config={config} style={{ minHeight: "100vh" }} className="newcover">
-      <CssBaseline />
-      <Header menuIcon={{ inactive: <MenuIcon />, active: <ChevronLeftIcon /> }} >
-        <HeaderInfo logout={handleLogout} />
-      </Header>
-      {isLoggedIn && <Sidebar />}
+      <AuthProvider>
+        <Root
+          config={config}
+          style={{ minHeight: "100vh" }}
+          className="newcover"
+        >
+          <CssBaseline />
+          <Header
+            menuIcon={{ inactive: <MenuIcon />, active: <ChevronLeftIcon /> }}
+          >
+            <HeaderInfo logout={handleLogout} />
+          </Header>
+          {isLoggedIn && <Sidebar />}
 
-      <Content className="p-2">
-        <Routes>
-          <Route path="/" element={ <SignIn setStatus={setStatus} setLoggedIn={setIsLoggedIn} />}></Route>
-          <Route path="/signup" element={<SignUp setStatus={setStatus} />}></Route>
-          <Route path="/home/" element={<EmptyHome />}></Route>
-          <Route path="/home/access" element={<DataIndex />}>
-          </Route>
-            <Route path="/home/access/upload" element={<Upload />}></Route>
-            <Route path="/home/access/download" element={<Download />}></Route>
-          <Route path="/home/data" element={<EraIndex />}> </Route>
-            <Route path="/home/data/datasets1" element={<Datasets1 />}></Route>
-            <Route path="/home/data/datasets2" element={<Datasets2 />}></Route>
-        </Routes>
-      </Content>
-      <Footer className="bg-gray-100">
-        <Copyright />
-      </Footer>
-    </Root>
+          <Content className="p-2">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <SignIn setStatus={setStatus} setLoggedIn={setIsLoggedIn} />
+                }
+              />
+              <Route
+                path="/signup"
+                element={<SignUp setStatus={setStatus} />}
+              />
+              <Route
+                path="/home/"
+                element={
+                  <RequireAuth>
+                    <Home />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/home/access"
+                element={
+                  <RequireAuth>
+                    <DataIndex />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/home/access/upload"
+                element={
+                  <RequireAuth>
+                    <Upload />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/home/access/download"
+                element={
+                  <RequireAuth>
+                    <Download />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/home/data"
+                element={
+                  <RequireAuth>
+                    <EraIndex />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/home/data/datasets1"
+                element={
+                  <RequireAuth>
+                    <Datasets1 />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/home/data/datasets2"
+                element={
+                  <RequireAuth>
+                    <Datasets2 />
+                  </RequireAuth>
+                }
+              />
+            </Routes>
+          </Content>
+          <Footer className="bg-gray-100">
+            <Copyright />
+          </Footer>
+        </Root>
+      </AuthProvider>
     </MuiThemeProvider>
   );
 };
 
 export default App;
 
-function AuthContent() {
-  return (
-    <Content className="p-2" navVariant="temporary">
-      <Routes>
 
-        <Route path="/home/" element={<EmptyHome />}></Route>
-        <Route path="/home/access">
-          <Route path="/home/access/upload" element={<Upload />}></Route>
-          <Route path="/home/access/download" element={<Download />}></Route>
-        </Route>
-        <Route path="/home/data">
-          <Route path="/home/data/datasets1" element={<Datasets1 />}></Route>
-          <Route path="/home/data/datasets2" element={<Datasets2 />}></Route>
-        </Route>
-      </Routes>
-    </Content>
-  );
-}
-
-function EmptyHome() {
-  return (
-    <div>
-      <h2>Home</h2>
-      <Outlet />
-    </div>
-  );
-}
-
-function EmptyData() {
-  return (
-    <div>
-      <h2>Data Access</h2>
-      <Outlet />
-    </div>
-  );
-}
-
-function EmptyEra() {
-  return (
-    <div>
-      <Outlet />
-    </div>
-  );
-}
-
-const Base = () => {
-  const [isLoggedIn, setIsLoggedIn] = useAtom(AUTH_ISLOGGEDIN);
-  const [status, setStatus] = useState("signin");
-  return (
-    <>
-      {status === "signin" && (
-        <SignIn setStatus={setStatus} setLoggedIn={setIsLoggedIn} />
-      )}
-      {status === "signup" && <SignUp setStatus={setStatus} />}
-    </>
-  );
-};
-
-const config = {
-  navAnchor: "left",
-  navVariant: {
-    xs: "temporary",
-    sm: "temporary",
-    md: "permanent",
-  },
-  navWidth: {
-    xs: 240,
-    sm: 256,
-    md: 256,
-  },
-  collapsible: {
-    xs: false,
-    sm: false,
-    md: false,
-  },
-  collapsedWidth: {
-    xs: 64,
-    sm: 64,
-    md: 64,
-  },
-  clipped: {
-    xs: true,
-    sm: true,
-    md: true,
-  },
-  headerPosition: {
-    xs: "relative",
-    sm: "relative",
-    md: "relative",
-  },
-  squeezed: {
-    xs: false,
-    sm: false,
-    md: true,
-  },
-  footerShrink: {
-    xs: false,
-    sm: false,
-    md: false,
-  },
-};

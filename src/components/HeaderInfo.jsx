@@ -6,20 +6,19 @@ import {  ExitToApp } from "@mui/icons-material";
 import { Routes, Route, Link, Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AUTH_ISLOGGEDIN } from "../App";
+import { useAuth } from "../utils/auth";
 
 const HeaderInfo = ({logout}) => {
   const [username, setUsername] = useState("login-individual");
   const [isLoggedIn, setIsLoggedIn] = useAtom(AUTH_ISLOGGEDIN);
   const navigate= useNavigate();
-  const handleLogout=()=>{
-    const timeout = setTimeout(() => {
-      setIsLoggedIn(false);
-      console.log('Timeout logic executed');
-    }, 10);
-    navigate("/");
-    // logout();
+
+  const auth = useAuth()
+  const handleLogoutAuth = () => {
+    setIsLoggedIn(false);
+    auth.logout()
+    navigate('/')
   }
-  
   return (
     <div
       style={{
@@ -29,7 +28,7 @@ const HeaderInfo = ({logout}) => {
       <Box sx={{ display: "flex", p: .2, bgcolor: "inherit", maxHeight:80 , alignItems:"center"}}>
         <Box sx={{ flexGrow:0, m: 1, flexDirection:"row", display:"flex", alignItems:"center" }}>
           <img
-            src="logo1.png"
+            src={require("../logo1.png")}
             alt="Logo"
             style={{ width: "auto", height: 30 }}
           />
@@ -40,11 +39,11 @@ const HeaderInfo = ({logout}) => {
         {isLoggedIn && (
           <>
             <Box sx={{ m: 1, display:{xs:"none", sm:"flex", alignItems:"center"}}}>
-              <Typography className="text-black">Welcome {username}</Typography>{" "}
+              <Typography className="text-black">Welcome {auth.user}</Typography>{" "}
             </Box>
             <Box sx={{ m: 1, alignItems:"center", color:"primary.main" }}>
               <Link to="/">
-                <button onClick={handleLogout} className="flex">
+                <button onClick={handleLogoutAuth} className="flex">
                   <Typography sx={{display:{xs:"none", sm:"flex"}}} >
                     Logout 
                   </Typography>

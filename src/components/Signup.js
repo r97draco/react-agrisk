@@ -24,23 +24,6 @@ import {
 } from "../Regex";
 import { themeOptions } from "../utils/muiTheme";
 
-function Copyright(props) {
-  return (
-    <>
-      <Typography variant="body1" color="text.primary" align="center">
-        {"Copyright © "} {new Date().getFullYear()}
-        {" GARS / "}
-        <Link color="inherit" href="https://parametrics.ag/">
-          Parametrics.ag
-        </Link>
-      </Typography>
-      <Typography variant="body2" color="text.secondary" align="center">
-        All rights reserved | Privacy Policy
-      </Typography>
-    </>
-  );
-}
-
 const theme = createTheme(themeOptions);
 
 export default function SignUp({ setStatus }) {
