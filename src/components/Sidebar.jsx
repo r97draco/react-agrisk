@@ -14,7 +14,8 @@ import DatasetIcon from "@mui/icons-material/Dataset";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { NavLink, useLocation } from "react-router-dom";
-import { Nav, Header } from "../Layout";
+import { Nav } from "../Layout";
+import HeaderSidebar from "./HeaderSidebar";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
@@ -46,7 +47,7 @@ const Sidebar = () => {
         inactive: <ChevronLeftIcon sx={{color:"primary.main"}} />,
         active: <ChevronRightIcon sx={{color:"primary.main"}}/>,
       }}
-      header={(ctx) => <Header />}
+      header={(ctx) => <HeaderSidebar/>}
     >
       <List
         sx={{
@@ -60,7 +61,6 @@ const Sidebar = () => {
         <NavLink
           to="/home/"
           className="hover:text-green-500"
-          activeClassName="text-green-500"
           style={navLinkStyles}
 
         >
@@ -75,7 +75,6 @@ const Sidebar = () => {
         <NavLink
           to="/home/access"
           className="hover:text-green-500"
-          activeClassName="text-green-500"
         >
           <ListItemButton onClick={handleClick} selected={isActive("/home/access")}>
             <ListItemIcon>
@@ -90,7 +89,6 @@ const Sidebar = () => {
             <NavLink
               to="/home/access/upload"
               className="hover:text-green-500"
-              activeClassName="text-green-500"
             >
               <ListItemButton sx={{ pl: 4 }} selected={isActive("/home/access/upload")}>
                 <ListItemIcon>
@@ -102,7 +100,6 @@ const Sidebar = () => {
             <NavLink
               to="/home/access/download"
               className="hover:text-green-500"
-              activeClassName="text-green-500"
             >
               <ListItemButton sx={{ pl: 4 }} selected={isActive("/home/access/download")}>
                 <ListItemIcon>
@@ -116,7 +113,6 @@ const Sidebar = () => {
         <NavLink
             to="/home/data"
             className="hover:text-green-500"
-            activeClassName="text-green-500"
           >
             <ListItemButton onClick={handleClick} selected={isActive("/home/data")}>
               <ListItemIcon>
@@ -131,7 +127,6 @@ const Sidebar = () => {
               <NavLink
                 to="/home/data/datasets1"
                 className="hover:text-green-500"
-                activeClassName="text-green-500"
               >
                 <ListItemButton sx={{ pl: 4 }} selected={isActive("/home/data/datasets1")}>
                   <ListItemIcon>
@@ -143,7 +138,6 @@ const Sidebar = () => {
               <NavLink
                 to="/home/data/datasets2"
                 className="hover:text-green-500"
-                activeClassName="text-green-500"
               >
                 <ListItemButton sx={{ pl: 4 }} selected={isActive("/home/data/datasets2")}>
                   <ListItemIcon>

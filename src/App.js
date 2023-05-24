@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "./App.css";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { Root, Header, Nav, Content, Footer } from "./Layout";
+import { Root, Header, Content, Footer } from "./Layout";
 import { Copyright } from "./Components/Footer";
-import { Routes, Route, Link, Outlet, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import HeaderInfo from "./Components/HeaderInfo";
 import { useAtom, atom } from "jotai";
 import Upload from "./Pages/DataAccess/Upload";
@@ -35,8 +35,8 @@ const App = () => {
   const auth = useAuth();
   const handleLogout = () => {
     setIsLoggedIn(false);
-    auth.logout()
-    navigate('/')
+    auth.logout();
+    navigate("/");
   };
 
   return (
@@ -47,6 +47,7 @@ const App = () => {
           style={{ minHeight: "100vh" }}
           className="newcover"
         >
+
           <CssBaseline />
           <Header
             menuIcon={{ inactive: <MenuIcon />, active: <ChevronLeftIcon /> }}
@@ -135,5 +136,3 @@ const App = () => {
 };
 
 export default App;
-
-

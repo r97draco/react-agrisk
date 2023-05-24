@@ -3,7 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -183,9 +182,6 @@ export default function SignUp({ setStatus }) {
                           value={dob}
                           onChange={handleDateChange}
                           defaultValue={dayjs("2002-01-01")}
-                          renderInput={(params) => (
-                            <TextField {...params} fullWidth />
-                          )}
                         />
                       </FormControl>
                       <FormHelperText>{dobText}</FormHelperText>
@@ -274,9 +270,9 @@ export default function SignUp({ setStatus }) {
                   <Grid item>
                     <Button onClick={() => setStatus("signin")}>
                       <RouterLink to="/">
-                        <Link href="" variant="body2">
+                        {/* <Link href="" variant="body2"> */}
                           Already have an account? Sign in
-                        </Link>
+                        {/* </Link> */}
                       </RouterLink>
                     </Button>
                   </Grid>

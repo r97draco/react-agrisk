@@ -16,14 +16,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
-import { ThemeOptions } from "@mui/material/styles";
-import { validEmail, validPassword, validUsername } from "../Utils/Regex";
-import {
-  Route,
-  Link as RouterLink,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { validPassword, validUsername } from "../Utils/Regex";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../App.css";
 import { themeOptions } from "../Utils/MuiTheme";
 import { useAuth } from "../Utils/Auth";
@@ -36,17 +30,11 @@ export default function SignIn({ setStatus, setLoggedIn }) {
   const [passwordText, setPasswordText] = React.useState("");
   const [radio, setRadio] = React.useState("admin");
   const [error, setError] = React.useState(false);
-  const [user, setUser] = React.useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useAuth();
-  const redirectPath = location.state?.path || "/home";
-
-  const handleLogin = () => {
-    auth.login(user);
-    navigate(redirectPath, { replace: true });
-  };
+  const redirectPath = location.state?.path || "/home/";
 
   const handleRadioChange = (event) => {
     setRadio(event.target.value);
@@ -61,12 +49,6 @@ export default function SignIn({ setStatus, setLoggedIn }) {
     event.preventDefault();
     let er = false;
     const data = new FormData(event.currentTarget);
-    console.log(
-      "pass---",
-      data.get("password"),
-      "---Validation-",
-      validPassword.test(data.get("password"))
-    );
     if (radio === "") {
       setRadioText("Select User or Administrator");
       er = true;
@@ -85,7 +67,7 @@ export default function SignIn({ setStatus, setLoggedIn }) {
       password: data.get("password"),
       person: data.get("person"),
       required: data.get("required"),
-      error: error,
+      error: er,
     });
     if (
       validPassword.test(data.get("password")) &&
@@ -115,27 +97,25 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                   display: { xs: "none", md: "flex" },
                   flexDirection: "column",
                 }}
-                className="items-center content-center justify-center rounded-md"
+                className="items-center content-center justify-center rounded-md shadow-lg bg-slate-100"
               >
                 <Box
-                  fullWidth
                   sx={{ p: 1, mb: 1, maxWidth: 800 }}
-                  className="rounded-md bg-slate-100"
+                  className="w-full rounded-md bg-slate-100"
                 >
                   <img
                     src="./combine.png"
-                    alt="map-image"
+                    alt="map-pic"
                     style={{ width: "auto", height: "auto" }}
                   />
                 </Box>
                 <Box
-                  fullWidth
                   sx={{ p: 1, maxWidth: 800 }}
-                  className="object-contain rounded-md bg-slate-100"
+                  className="object-contain w-full rounded-md bg-slate-100"
                 >
                   <img
                     src="./map1.jpg"
-                    alt="map-image"
+                    alt="map-pic"
                     style={{ width: 800, height: "auto" }}
                   />
                 </Box>
@@ -211,7 +191,6 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                               defaultValue="admin"
                               autoFocus
                               onChange={(e) => {
-                                setUser(e.target.value);
                                 setUsernameText("");
                                 setError(false);
                               }}
@@ -254,7 +233,7 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                           <Grid item xs={12}>
                             <Button
                               type="submit"
-                              fullWidth
+                              className="w-full"
                               variant="contained"
                               sx={{ mt: 3, mb: 2 }}
                               // onClick={handleLogin}
@@ -278,12 +257,17 @@ export default function SignIn({ setStatus, setLoggedIn }) {
                             </Grid>
                           </Grid>
 
-                          <Grid item xs={12} className="flex items-center justify-center w-full p-0 m-0">
-                            {/* <Link variant="body2"> */}
-                              <Button onClick={handleCreateAccount} variant="text" >
+                          <Grid
+                            item
+                            xs={12}
+                            className="flex items-center justify-center w-full p-0 m-0"
+                          >
+                            <Button
+                              onClick={handleCreateAccount}
+                              variant="text"
+                            >
                               Don't have an account? Sign Up
-                              </Button>
-                            {/* </Link> */}
+                            </Button>
                           </Grid>
                         </Grid>
                       </FormControl>
