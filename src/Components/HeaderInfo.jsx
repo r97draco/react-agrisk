@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box } from "@mui/system";
 import { Button, Typography } from "@mui/material";
 import { useAtom } from "jotai";

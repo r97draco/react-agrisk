@@ -50,7 +50,6 @@ const Upload = () => {
       <Typography variant="body1">Upload Data to AWS</Typography>
       {isSelected && <FileDetails/>}
       <Stack paddingTop={2} direction={{ xs: 'column', sm: 'row' }} alignItems="center" justifyContent="center" spacing={2}>
-        {/* <input  accept="*" multiple type="file" onChange={(event)=>changeHandler(event)} width={400}/> */}
         <TextField
           margin="normal"
           required
@@ -63,9 +62,6 @@ const Upload = () => {
         <Button variant="contained" component="label" sx={{width:200}}>
           Upload
         </Button>
-        <div className="m-2" >
-          {/* {"Upload is "}{isUploaded} */}
-        </div>
       </Stack>
     </div>
   );
