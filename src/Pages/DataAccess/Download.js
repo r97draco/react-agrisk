@@ -5,12 +5,12 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 
 const Download = () => {
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(false);
   const handleFile = (event) => {
     setFile(event);
   };
   return (
-    <div className="items-center block m-3 text-center rounded-md backdrop-blur-md">
+    <div className="items-center block p-2 m-0 text-center rounded-md shadow-lg bg-gray-50 ">
       <Typography variant="body1">Download Data from AWS</Typography>
       <Stack
         paddingTop={2}
@@ -20,7 +20,7 @@ const Download = () => {
         spacing={4}
       >
         
-        <TextField
+       { <TextField
           margin="normal"
           required
           sx={{width:{xs:"auto", sm:400}}}
@@ -30,8 +30,11 @@ const Download = () => {
           onChange={(ev) => {
             setFile(ev);
           }}
-        />
-        <Button variant="contained" component="label" sx={{width:200}}>
+        />}
+        { file && <Button variant="text" component="label" sx={{width:200, flexGrow:1}}>
+          {file}
+        </Button>}
+        <Button variant="contained" component="label" sx={{width:200}} >
           Download
         </Button>
       </Stack>

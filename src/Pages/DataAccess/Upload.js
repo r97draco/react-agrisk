@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import { Alert } from "@mui/material";
 
 const Upload = () => {
   const [selectedFile, setSelectedFile] = useState();
@@ -10,27 +11,29 @@ const Upload = () => {
   const [isSelected, setIsSelected] = useState(false);
 
   const changeHandler = (event) => {
-    if (event?.target?.files.length > 0){
+    setIsUploaded("undefined");
+    if (event?.target?.files.length > 0) {
       setSelectedFile(event.target.files[0]);
       setIsSelected(true);
-    }
-    else {
+    } else {
       setIsSelected(false);
     }
   };
-  const FileDetails =()=>{
-    return <div className="m-2">
-    <p>Filename: {selectedFile.name}</p>
-    <p>Filetype: {selectedFile.type}</p>
-    <p>Size in bytes: {selectedFile.size}</p>
-  </div>
-  }
+  const FileDetails = () => {
+    return (
+      <div className="m-2">
+        <p>Filename: {selectedFile.name}</p>
+        <p>Filetype: {selectedFile.type}</p>
+        <p>Size in bytes: {selectedFile.size}</p>
+      </div>
+    );
+  };
   const handleSubmission = () => {
     const formData = new FormData();
 
     formData.append("File", selectedFile);
 
-    fetch("https://freeimage.host/api/1/upload?key=<YOUR_API_KEY>", {
+    fetch("Upload_API", {
       method: "POST",
       body: formData,
     })
@@ -46,26 +49,43 @@ const Upload = () => {
   };
 
   return (
-    <div className="items-center block m-3 text-center rounded-md backdrop-blur-md">
+    <div className="items-center block p-2 m-0 text-center rounded-md shadow-lg bg-gray-50 ">
       <Typography variant="body1">Upload Data to AWS</Typography>
-      {isSelected && <FileDetails/>}
-      <Stack paddingTop={2} direction={{ xs: 'column', sm: 'row' }} alignItems="center" justifyContent="center" spacing={2}>
+      {isSelected && <FileDetails />}
+      <Stack
+        paddingTop={2}
+        direction={{ xs: "column", sm: "row" }}
+        alignItems="center"
+        justifyContent="center"
+        spacing={2}
+      >
         <TextField
           margin="normal"
           required
-          accept="*" multiple
-          onChange={(event)=>changeHandler(event)}
-          sx={{width:{xs:"auto", sm:400}}}
+          accept="*"
+          multiple
+          onChange={(event) => changeHandler(event)}
+          sx={{ width: { xs: "auto", sm: 400 } }}
           name="password"
           type="file"
         />
-        <Button variant="contained" component="label" sx={{width:200}}>
+        <Button
+          variant="contained"
+          component="label"
+          sx={{ width: 200 }}
+          onClick={handleSubmission}
+        >
           Upload
         </Button>
       </Stack>
+      {isUploaded === "Successful" && (
+        <Alert severity="success">Success: File Uploaded Successfully</Alert>
+      )}
+      {isUploaded === "Unsuccessful" && (
+        <Alert severity="error">Error: Upload Unsuccessful</Alert>
+      )}
     </div>
   );
 };
 
 export default Upload;
-

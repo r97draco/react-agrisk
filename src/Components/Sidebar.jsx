@@ -18,7 +18,7 @@ import { Nav } from "../Layout";
 import HeaderSidebar from "./HeaderSidebar";
 
 const Sidebar = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const location = useLocation();
   const [selectedPath, setSelectedPath] = useState(location.pathname);
 
