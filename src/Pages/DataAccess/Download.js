@@ -27,9 +27,6 @@ const Download = () => {
           name="password"
           label="Search a file to download…"
           type="text"
-          onChange={(ev) => {
-            setFile(ev);
-          }}
         />}
         { file && <Button variant="text" component="label" sx={{width:200, flexGrow:1}}>
           {file}
