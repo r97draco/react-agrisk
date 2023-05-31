@@ -134,13 +134,13 @@ const Datasets1 = () => {
             Submit
           </Button>
           {Object.values(formErrors).some((error) => error) && (<>
-            <Alert severity="error" className="p-2 mb-3 rounded-md shadow-lg bg-gray-50" >
+            <Alert variant="standard" severity="error" className="p-2 mb-3 rounded-md shadow-lg bg-gray-50" >
               Error : One (or more) of the required fields is missing !
             </Alert>
             </>
           )}
           { submitted && 
-            <Alert severity="success" className="p-2 mb-3 rounded-md shadow-lg " >
+            <Alert variant="standard" severity="success" className="p-2 mb-3 rounded-md shadow-lg " >
               Success : Your request is successfully submitted! 
             </Alert>
           }       
@@ -155,7 +155,7 @@ export default Datasets1;
 
 const makeApiCall = async (setFile, payload) => {
   try {
-    const response = await fetch("API_GATEWAY_ENDPOINT", {
+    const response = await fetch("https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com", {
       method: "POST",
       body: JSON.stringify(payload),
     });
