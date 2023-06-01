@@ -34,10 +34,11 @@ const Upload = () => {
     formData.append("File", selectedFile);
     console.log("FormData :",formData);
     // const APIEndpoint= 'https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?username="ericknuque"&filename="'+selectedFile.name+'"&content="ABC,DEF,XYZ"'
-    const APIEndpoint= 'https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?username="ericknuque"&filename="test_ericknuque_20230601000001.csv"&content="ABC,DEF,XYZ"'
+    const APIEndpoint= 'https://5u8lxhfkbj.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?username="ericknuque"&filename="test_ericknuque_20230601000001.csv"&content="ABC,DEF,XYZ"'
     fetch(APIEndpoint, {
       method: "POST",
       body: formData,
+      mode: 'no-cors',
     })
       .then((response) => response.json())
       .then((result) => {
