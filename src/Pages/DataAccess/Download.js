@@ -3,12 +3,29 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import { axiosApiCall } from "../../Utils/API";
 
 const Download = () => {
   const [file, setFile] = useState(false);
+  const [inputValue, setInputValue]= useState("");
   const handleFile = (event) => {
     setFile(event);
   };
+
+  const endpoint = 'https://5u8lxhfkbj.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data';
+  const username = "ericknuque";
+  // const filename = inputValue;
+  const filename="test_ericknuque_20230601000000.csv";
+  const content= "abc";
+
+  const params = {
+    username: username,
+    filename: filename,
+    content: content
+  };
+  const handleDownload = ()=>{
+    axiosApiCall( endpoint, params, setFile)
+  }
   return (
     <div className="items-center block p-2 m-0 text-center rounded-md shadow-lg bg-gray-50 ">
       <Typography variant="body1">Download Data from AWS</Typography>
@@ -27,11 +44,12 @@ const Download = () => {
           name="password"
           label="Search a file to download…"
           type="text"
+          onClick={(ev)=> setInputValue(ev)}
         />}
         { file && <Button variant="text" component="label" sx={{width:200, flexGrow:1}}>
           {file}
         </Button>}
-        <Button variant="contained" component="label" sx={{width:200}} >
+        <Button variant="contained" onClick={handleDownload} component="label" sx={{width:200}} >
           Download
         </Button>
       </Stack>

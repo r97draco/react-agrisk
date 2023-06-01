@@ -1,4 +1,4 @@
-import {Grid, IconButton, Typography } from "@material-ui/core";
+import { Grid, IconButton, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -7,21 +7,22 @@ import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import DownloadIcon from '@mui/icons-material/Download';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from "@mui/icons-material/Download";
+import DeleteIcon from "@mui/icons-material/Delete";
 import "../../App.css";
 import { Alert, FormControl, FormLabel, Stack } from "@mui/material";
-import BugReportIcon from '@mui/icons-material/BugReport';
+import BugReportIcon from "@mui/icons-material/BugReport";
+import { axiosApiCall, makeApiCall, newApiCall } from "../../Utils/API";
 
 const Datasets1 = () => {
   const [submitted, setSubmitted] = useState(false);
   const [file, setFile] = useState("File Name");
-  const [selectedVariables, setSelectedVariables] = useState(['cloud_cover']);
-  const [selectedStatistics, setSelectedStatistics] = useState(['24_hour_maximum']);
-  const [selectedYears, setSelectedYears] = useState([2022]);
-  const [selectedMonths, setSelectedMonths] = useState(['January']);
-  const [selectedDays, setSelectedDays] = useState([1]);
-  const [selectedTimes, setSelectedTimes] = useState(['12:00']);
+  const [selectedVariables, setSelectedVariables] = useState(["cloud_cover"]);
+  const [selectedStatistics, setSelectedStatistics] = useState(["24_hour_maximum"]);
+  const [selectedYears, setSelectedYears] = useState(['2022']);
+  const [selectedMonths, setSelectedMonths] = useState(['01']);
+  const [selectedDays, setSelectedDays] = useState(['01']);
+  const [selectedTimes, setSelectedTimes] = useState(["12_00"]);
   const [selectedArea, setSelectedArea] = useState("");
 
   const [formErrors, setFormErrors] = useState({
@@ -65,22 +66,27 @@ const Datasets1 = () => {
     }
 
     setSubmitted(true);
-    setTimeout(()=>setSubmitted(false), 3000)
+    setTimeout(() => setSubmitted(false), 3000);
 
-    let payload={
-      variable:selectedVariables,
+    let payload = {
+      variable: selectedVariables,
       statistic: selectedStatistics,
-      area: selectedArea,
       years: selectedYears,
       month: selectedMonths,
-      days: selectedDays,
+      day: selectedDays,
       time: selectedTimes,
       format: format,
+    };
+    if (area === 'subRegion') {
+      payload.area = selectedArea;
     }
     console.log(payload);
-    makeApiCall(setFile, payload);
-
-    // console.log({ variable, statistic, year, month, day, time, area, format, selectedVar: selectedVariables, selectedStatistics: selectedStatistics, selectedArea: selectedArea,selectedYears: selectedYears, selectedMonths: selectedMonths,  selectedDays: selectedDays, selectedTimes: selectedTimes, error: Object.values(errors).some((error) => error), });
+    const endpoint1 = 'https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data';
+    const endpoint2 = 'https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com/search-era5-gars-data';
+    
+    // makeApiCall(setFile, payload);
+    // newApiCall(setFile, payload);
+    // axiosApiCall(endpoint1, setFile, payload);
   };
 
   return (
@@ -95,55 +101,76 @@ const Datasets1 = () => {
           alignContent="center"
           justifyContent="center"
         >
-              <FormControl error={formErrors.error}>
-              <FormControl error={formErrors.variable}>
-                <VariableSelection
-                  selectedVariables={selectedVariables}
-                  setSelectedVariables={setSelectedVariables}
-                />
-              </FormControl>
-              <FormControl error={formErrors.statistic}>
-                <StatisticComponent
-                  selectedStatistics={selectedStatistics}
-                  setSelectedStatistics={setSelectedStatistics}
-                />
-              </FormControl>
-              <FormControl error={formErrors.year}>
-                <YearComponent selectedYears={selectedYears} setSelectedYears={setSelectedYears} />
-              </FormControl>
-              <FormControl error={formErrors.month}>
-                <MonthComponent selectedMonths={selectedMonths} setSelectedMonths={setSelectedMonths} />
-              </FormControl>
-              <FormControl error={formErrors.day}>
-                <DayComponent selectedDays={selectedDays} setSelectedDays={setSelectedDays} />
-              </FormControl>
-              <FormControl error={formErrors.time}>
-                <TimeComponent selectedTimes={selectedTimes} setSelectedTimes={setSelectedTimes} />
-              </FormControl>
-              <FormControl error={formErrors.area}>
-                <GeographicalAreaComponent
-                  selectedArea={selectedArea}
-                  setSelectedArea={setSelectedArea}
-                />
-              </FormControl>
-              <FormControl error={formErrors.format}>
-                <FormatComponent />
-              </FormControl>
+          <FormControl error={formErrors.error}>
+            <FormControl error={formErrors.variable}>
+              <VariableSelection
+                selectedVariables={selectedVariables}
+                setSelectedVariables={setSelectedVariables}
+              />
+            </FormControl>
+            <FormControl error={formErrors.statistic}>
+              <StatisticComponent
+                selectedStatistics={selectedStatistics}
+                setSelectedStatistics={setSelectedStatistics}
+              />
+            </FormControl>
+            <FormControl error={formErrors.year}>
+              <YearComponent
+                selectedYears={selectedYears}
+                setSelectedYears={setSelectedYears}
+              />
+            </FormControl>
+            <FormControl error={formErrors.month}>
+              <MonthComponent
+                selectedMonths={selectedMonths}
+                setSelectedMonths={setSelectedMonths}
+              />
+            </FormControl>
+            <FormControl error={formErrors.day}>
+              <DayComponent
+                selectedDays={selectedDays}
+                setSelectedDays={setSelectedDays}
+              />
+            </FormControl>
+            <FormControl error={formErrors.time}>
+              <TimeComponent
+                selectedTimes={selectedTimes}
+                setSelectedTimes={setSelectedTimes}
+              />
+            </FormControl>
+            <FormControl error={formErrors.area}>
+              <GeographicalAreaComponent
+                selectedArea={selectedArea}
+                setSelectedArea={setSelectedArea}
+              />
+            </FormControl>
+            <FormControl error={formErrors.format}>
+              <FormatComponent />
+            </FormControl>
 
-          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Submit
-          </Button>
-          {Object.values(formErrors).some((error) => error) && (<>
-            <Alert variant="standard" severity="error" className="p-2 mb-3 rounded-md shadow-lg bg-gray-50" >
-              Error : One (or more) of the required fields is missing !
-            </Alert>
-            </>
-          )}
-          { submitted && 
-            <Alert variant="standard" severity="success" className="p-2 mb-3 rounded-md shadow-lg " >
-              Success : Your request is successfully submitted! 
-            </Alert>
-          }       
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+              Submit
+            </Button>
+            {Object.values(formErrors).some((error) => error) && (
+              <>
+                <Alert
+                  variant="standard"
+                  severity="error"
+                  className="p-2 mb-3 rounded-md shadow-lg bg-gray-50"
+                >
+                  Error : One (or more) of the required fields is missing !
+                </Alert>
+              </>
+            )}
+            {submitted && (
+              <Alert
+                variant="standard"
+                severity="success"
+                className="p-2 mb-3 rounded-md shadow-lg "
+              >
+                Success : Your request is successfully submitted!
+              </Alert>
+            )}
           </FormControl>
           <File filename={file} setFile={setFile} />
         </Box>
@@ -153,62 +180,58 @@ const Datasets1 = () => {
 };
 export default Datasets1;
 
-const makeApiCall = async (setFile, payload) => {
-  try {
-    const response = await fetch("https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    if (response.ok) {
-      const downloadUrl = await response.json();
-      console.log("downloadUrl : ", downloadUrl)
-      setFile(downloadUrl);
-      // Process the download URL or trigger the file download
-    } else {
-      // const errorData = await response.json();
-      setFile("error");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    setFile("error");
-  }
-};
 
-const File = ({filename, setFile}) => {
+const File = ({ filename, setFile }) => {
   const downloadFile = filename.toString();
 
   return (
     <Box className="items-center block p-2 m-0 text-left rounded-md shadow-lg bg-gray-50 ">
-      <Typography variant="body1">Download File
-      <IconButton sx={{ width: "auto"}} variant="contained" component="label"
-      onClick={()=>setFile("File Name")} >
-        <BugReportIcon />
-      </IconButton>
-      </Typography>        
+      <Typography variant="body1">
+        Download File
+        <IconButton
+          sx={{ width: "auto" }}
+          variant="contained"
+          component="label"
+          onClick={() => setFile("File Name")}
+        >
+          <BugReportIcon />
+        </IconButton>
+      </Typography>
 
-      {filename !== "nofile" &&
-      <Stack
-        paddingTop={2}
-        direction={{ xs: "column", sm: "row" }}
-        alignItems="center"
-        justifyContent="center"
-        spacing={4}
-      >
-        <Button variant="text" sx={{ width: { xs: "auto", sm: 400 }, flexGrow:1}}>
-          {downloadFile}
-        </Button>
-          {downloadFile !=="error" && <> <Button  variant="contained" component="label" sx={{ width: 150 }}>
-          Download
-          <DownloadIcon/>
-        </Button>
-        </>
-        }
-        <Button sx={{bgcolor:"#FF9494", width: 110}} variant="contained" component="label"
-        onClick={()=>setFile("nofile")} >
-          Delete
-          <DeleteIcon />
-        </Button>
-      </Stack>}
+      {filename !== "nofile" && (
+        <Stack
+          paddingTop={2}
+          direction={{ xs: "column", sm: "row" }}
+          alignItems="center"
+          justifyContent="center"
+          spacing={4}
+        >
+          <Button
+            variant="text"
+            sx={{ width: { xs: "auto", sm: 400 }, flexGrow: 1 }}
+          >
+            {downloadFile}
+          </Button>
+          {downloadFile !== "error" && (
+            <>
+              {" "}
+              <Button variant="contained" component="label" sx={{ width: 150 }}>
+                Download
+                <DownloadIcon />
+              </Button>
+            </>
+          )}
+          <Button
+            sx={{ bgcolor: "#FF9494", width: 110 }}
+            variant="contained"
+            component="label"
+            onClick={() => setFile("nofile")}
+          >
+            Delete
+            <DeleteIcon />
+          </Button>
+        </Stack>
+      )}
     </Box>
   );
 };
@@ -352,16 +375,15 @@ const StatisticComponent = ({ selectedStatistics, setSelectedStatistics }) => {
   );
 };
 
-const YearComponent = ({selectedYears, setSelectedYears}) => {
+const YearComponent = ({ selectedYears, setSelectedYears }) => {
   const startYear = 1979;
   const endYear = 2022;
   const years = [...Array(endYear - startYear + 1)].map(
     (_, index) => startYear + index
   );
 
-
   function handleSelectAll() {
-    setSelectedYears(years);
+    setSelectedYears(years.map(year => year.toString()));
   }
 
   function handleClearAll() {
@@ -380,15 +402,15 @@ const YearComponent = ({selectedYears, setSelectedYears}) => {
             value={year.toString()}
             control={
               <Checkbox
-                checked={selectedYears.includes(year)}
+                checked={selectedYears.includes(year.toString())}
                 onChange={() => {
                   setSelectedYears((prevSelectedYears) => {
-                    if (prevSelectedYears.includes(year)) {
+                    if (prevSelectedYears.includes(year.toString())) {
                       return prevSelectedYears.filter(
-                        (selectedYear) => selectedYear !== year
+                        (selectedYear) => selectedYear !== year.toString()
                       );
                     } else {
-                      return [...prevSelectedYears, year];
+                      return [...prevSelectedYears, year.toString()];
                     }
                   });
                 }}
@@ -409,61 +431,59 @@ const YearComponent = ({selectedYears, setSelectedYears}) => {
   );
 };
 
-const MonthComponent = ({selectedMonths ,setSelectedMonths}) => {
+const MonthComponent = ({ selectedMonths, setSelectedMonths }) => {
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    { name: 'January', value: '01' },
+    { name: 'February', value: '02' },
+    { name: 'March', value: '03' },
+    { name: 'April', value: '04' },
+    { name: 'May', value: '05' },
+    { name: 'June', value: '06' },
+    { name: 'July', value: '07' },
+    { name: 'August', value: '08' },
+    { name: 'September', value: '09' },
+    { name: 'October', value: '10' },
+    { name: 'November', value: '11' },
+    { name: 'December', value: '12' },
   ];
 
+  const handleSelectAll = () => {
+    const allMonths = months.map((month) => month.value);
+    setSelectedMonths(allMonths);
+  };
 
-  function handleSelectAll() {
-    setSelectedMonths(months);
-  }
-
-  function handleClearAll() {
+  const handleClearAll = () => {
     setSelectedMonths([]);
-  }
+  };
 
-  function handleMonthSelection(month) {
+  const handleMonthSelection = (value) => {
     setSelectedMonths((prevSelectedMonths) => {
-      if (prevSelectedMonths.includes(month)) {
-        return prevSelectedMonths.filter(
-          (selectedMonth) => selectedMonth !== month
-        );
+      if (prevSelectedMonths.includes(value)) {
+        return prevSelectedMonths.filter((selectedMonth) => selectedMonth !== value);
       } else {
-        return [...prevSelectedMonths, month];
+        return [...prevSelectedMonths, value];
       }
     });
-  }
+  };
 
   return (
     <Box className="p-2 mb-3 rounded-md shadow-lg bg-gray-50">
       <Typography>Month</Typography>
       <FormLabel>At least one selection must be made</FormLabel>
       <div>
-        {months.map((month, index) => (
+        {months.map((month) => (
           <FormControlLabel
-            key={index}
-            value={month}
+            key={month.value}
+            value={month.name}
             name="month"
             className="w-full p-2 lg:w-1/8 md:w-1/6 sm:w-1/3"
             control={
               <Checkbox
-                checked={selectedMonths.includes(month)}
-                onChange={() => handleMonthSelection(month)}
+                checked={selectedMonths.includes(month.value)}
+                onChange={() => handleMonthSelection(month.value)}
               />
             }
-            label={month}
+            label={month.name}
           />
         ))}
       </div>
@@ -477,19 +497,21 @@ const MonthComponent = ({selectedMonths ,setSelectedMonths}) => {
   );
 };
 
-const DayComponent = ({selectedDays ,setSelectedDays}) => {
-  const days = [...Array(31).keys()].map((day) => day + 1);
+const DayComponent = ({ selectedDays, setSelectedDays }) => {
+  const days = [...Array(31).keys()].map((day) => {
+    const dayNumber = day + 1;
+    return dayNumber < 10 ? `0${dayNumber}` : `${dayNumber}`;
+  });
 
-
-  function handleSelectAll() {
+  const handleSelectAll = () => {
     setSelectedDays(days);
-  }
+  };
 
-  function handleClearAll() {
+  const handleClearAll = () => {
     setSelectedDays([]);
-  }
+  };
 
-  function handleDaySelection(day) {
+  const handleDaySelection = (day) => {
     setSelectedDays((prevSelectedDays) => {
       if (prevSelectedDays.includes(day)) {
         return prevSelectedDays.filter((selectedDay) => selectedDay !== day);
@@ -497,7 +519,7 @@ const DayComponent = ({selectedDays ,setSelectedDays}) => {
         return [...prevSelectedDays, day];
       }
     });
-  }
+  };
 
   return (
     <Box className="p-2 mb-3 rounded-md shadow-lg bg-gray-50">
@@ -508,7 +530,7 @@ const DayComponent = ({selectedDays ,setSelectedDays}) => {
           <FormControlLabel
             key={index}
             name="day"
-            value={day.toString()}
+            value={day}
             className="w-full p-2 lg:w-1/8 md:w-1/6 sm:w-1/3"
             control={
               <Checkbox
@@ -516,7 +538,7 @@ const DayComponent = ({selectedDays ,setSelectedDays}) => {
                 onChange={() => handleDaySelection(day)}
               />
             }
-            label={day.toString()}
+            label={day}
           />
         ))}
       </div>
@@ -530,29 +552,32 @@ const DayComponent = ({selectedDays ,setSelectedDays}) => {
   );
 };
 
-const TimeComponent = ({selectedTimes, setSelectedTimes}) => {
+const TimeComponent = ({ selectedTimes, setSelectedTimes }) => {
   const times = ["06:00", "09:00", "12:00", "15:00", "18:00"];
 
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(':');
+    return `${hours}_${minutes}`;
+  };
 
-  function handleSelectAll() {
-    setSelectedTimes(times);
-  }
+  const handleSelectAll = () => {
+    setSelectedTimes(times.map(formatTime));
+  };
 
-  function handleClearAll() {
+  const handleClearAll = () => {
     setSelectedTimes([]);
-  }
+  };
 
-  function handleTimeSelection(time) {
+  const handleTimeSelection = (time) => {
     setSelectedTimes((prevSelectedTimes) => {
-      if (prevSelectedTimes.includes(time)) {
-        return prevSelectedTimes.filter(
-          (selectedTime) => selectedTime !== time
-        );
+      const formattedTime = formatTime(time);
+      if (prevSelectedTimes.includes(formattedTime)) {
+        return prevSelectedTimes.filter((selectedTime) => selectedTime !== formattedTime);
       } else {
-        return [...prevSelectedTimes, time];
+        return [...prevSelectedTimes, formattedTime];
       }
     });
-  }
+  };
 
   return (
     <Box className="p-2 mb-3 rounded-md shadow-lg bg-gray-50">
@@ -562,12 +587,12 @@ const TimeComponent = ({selectedTimes, setSelectedTimes}) => {
         {times.map((time, index) => (
           <FormControlLabel
             key={index}
-            value={time}
+            value={formatTime(time)}
             name="time"
             className="w-full p-2 lg:w-1/8 md:w-1/6 sm:w-1/3"
             control={
               <Checkbox
-                checked={selectedTimes.includes(time)}
+                checked={selectedTimes.includes(formatTime(time))}
                 onChange={() => handleTimeSelection(time)}
               />
             }
@@ -585,7 +610,7 @@ const TimeComponent = ({selectedTimes, setSelectedTimes}) => {
   );
 };
 
-const GeographicalAreaComponent = ({selectedArea,setSelectedArea}) => {
+const GeographicalAreaComponent = ({ selectedArea, setSelectedArea }) => {
   const [areaOption, setAreaOption] = useState("wholeRegion");
   const [north, setNorth] = useState(90);
   const [west, setWest] = useState(-180);
@@ -676,7 +701,7 @@ const GeographicalAreaComponent = ({selectedArea,setSelectedArea}) => {
       <RadioGroup
         name="area"
         value={areaOption}
-        data= {selectedArea}
+        data={selectedArea}
         onChange={handleAreaOptionChange}
       >
         <FormControlLabel
@@ -692,19 +717,39 @@ const GeographicalAreaComponent = ({selectedArea,setSelectedArea}) => {
         <Grid container spacing={1}>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}></Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}>
-            <TextField  type="number" label="North" value={north} onChange={handleNorthChange} />
+            <TextField
+              type="number"
+              label="North"
+              value={north}
+              onChange={handleNorthChange}
+            />
           </Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}></Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}>
-            <TextField type="number" label="East" value={east} onChange={handleEastChange} />
+            <TextField
+              type="number"
+              label="East"
+              value={east}
+              onChange={handleEastChange}
+            />
           </Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}></Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}>
-            <TextField type="number" label="West" value={west} onChange={handleWestChange} />
+            <TextField
+              type="number"
+              label="West"
+              value={west}
+              onChange={handleWestChange}
+            />
           </Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}></Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}>
-            <TextField type="number" label="South" value={south} onChange={handleSouthChange} />
+            <TextField
+              type="number"
+              label="South"
+              value={south}
+              onChange={handleSouthChange}
+            />
           </Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4}></Grid>
         </Grid>
@@ -812,7 +857,6 @@ const FormatComponent = () => {
 //     </Box>
 //   );
 // };
-
 
 // const Datasets1 = () => {
 //   const [selectedVariables, setSelectedVariables] = useState([]);
