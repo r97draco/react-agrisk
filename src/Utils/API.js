@@ -12,6 +12,7 @@ export const axiosApiCall = async (endpoint, params, setFile) => {
       // Process the response data here
       console.log("Axios API:", response.data);
       setFile(response.data);
+      
     })
     .catch((error) => {
       // Handle any errors
