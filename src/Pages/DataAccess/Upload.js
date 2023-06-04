@@ -77,6 +77,7 @@ const Upload = () => {
           component="label"
           sx={{ width: 200 }}
           onClick={handleSubmission}
+          disabled={!isSelected}
         >
           Upload
         </Button>
