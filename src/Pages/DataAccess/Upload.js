@@ -5,6 +5,11 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { Alert } from "@mui/material";
 
+/**
+ * Upload Component renders a file input component to select the file from the device and enables uploading the file to an AWS server using an API.
+ *
+ * @returns {JSX.Element} - Upload Component
+ */
 const Upload = () => {
   const [selectedFile, setSelectedFile] = useState();
   const [isUploaded, setIsUploaded] = useState("undefined");
@@ -33,7 +38,6 @@ const Upload = () => {
 
     formData.append("File", selectedFile);
     console.log("FormData :",formData);
-    // const APIEndpoint= 'https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?username="ericknuque"&filename="'+selectedFile.name+'"&content="ABC,DEF,XYZ"'
     const APIEndpoint= 'https://5u8lxhfkbj.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?username="ericknuque"&filename="test_ericknuque_20230601000001.csv"&content="ABC,DEF,XYZ"'
     fetch(APIEndpoint, {
       method: "POST",
@@ -86,10 +90,9 @@ const Upload = () => {
         <Alert severity="success">Success: File Uploaded Successfully</Alert>
       )}
       {isUploaded === "Unsuccessful" && (
-        <Alert severity="error">Error: Upload Unsuccessful</Alert>
+        <Alert severity="error">Error: File Upload Unsuccessful</Alert>
       )}
     </div>
   );
 };
-
 export default Upload;

@@ -3,26 +3,31 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { axiosApiCall } from "../../Utils/API";
 import axios from "axios";
 import { Alert } from "@mui/material";
 import { saveAs } from "file-saver";
 
-// const jun3link = "https://h57y6aazo9.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data?username=rommelnuque05&filename=test_ericknuque_20230601000000.csv";
-
-const photoURL = "https://picsum.photos/200";
-
+/**
+ * DownloadComponent renders a text input component to input a filename from the user and enables downloading the file from an API.
+ *
+ * @returns {JSX.Element} - DownloadComponent div
+ */
 const Download = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [fileInput, setFileInput] = useState("file-name");
+  const [fileInput, setFileInput] = useState(
+    "test_ericknuque_20230601000000.csv"
+  );
   const [isDownloaded, setIsDownloaded] = useState("undefined");
 
+  /**
+   * handleDownload function is responsible for initiating the file download process from an API asynchronously.
+   */
   const handleDownload = async () => {
     //----------------GENERATING THE URL------------------------------------
     const endpoint =
       "https://h57y6aazo9.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data";
-    const username = "rommelnuque05";
+    const username = "erickpogi2023";
     const filename =
       fileInput !== "" ? fileInput : "test_ericknuque_20230601000000.csv";
     const params = {
@@ -32,54 +37,33 @@ const Download = () => {
     const queryString = new URLSearchParams(params).toString();
     const URL = `${endpoint}?${queryString}`;
     //-------------------------------------------------------------
-    //----------------FOR PROXY SERVER-----------------------------------------
-    const options = {
-      method: "GET",
-      url: "http://localhost:8080/",
-      responseType: "blob",
-      params: {
-        url: "https://h57y6aazo9.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data",
-        username: "rommelnuque05",
-        // filename:"test_ericknuque_20230601000000.csv",
-        filename: fileInput,
-      },
-    };
-    //-----------------END OF PROXY--------------------------------------------
-
-    const testnewurl =
-      "https://h57y6aazo9.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data?test='Testing from Erick'";
     try {
+      setLoading(true);
       const response = await axios({
-        url: testnewurl,
+        url: URL,
         method: "GET",
         responseType: "blob",
       });
-      setLoading(true);
 
       console.log(`Res`, response);
-      let filename = "file";
-      // console.log(`headers`, response.headers);
+      let filename = fileInput !== "" ? fileInput : "file";
+      console.log(`Content Length: `, response.data["size"]);
 
-      const contentDisposition = response.headers["content-disposition"];
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename=(.+)$/i);
-        if (filenameMatch) {
-          filename = filenameMatch[1];
-        }
-      } else {
-        // const urlSegments = URL.match(/filename=(.+)$/i);
-        // filename = urlSegments[urlSegments.length - 1];
-        // filename = urlSegments?urlSegments[1]:"file"
-        filename = fileInput !== "" ? fileInput : "file";
-      }
-      if (response.status === 200 && response.data) {
+      if (
+        response.status === 200 &&
+        response.data &&
+        response.data["size"] > 0
+      ) {
         const blob = new Blob([response.data], {
           type: response.headers["content-type"],
         });
         saveAs(blob, filename);
         setIsDownloaded("Successful");
       } else {
-        console.error("Response is not OK:", response.status);
+        console.error(
+          "Response is not OK || No file present:",
+          response.status
+        );
         setIsDownloaded("Unsuccessful");
         throw new Error("Response is not OK");
       }
@@ -141,7 +125,7 @@ const Download = () => {
         <Alert severity="success">Success: File Downlaoded Successfully</Alert>
       )}
       {isDownloaded === "Unsuccessful" && (
-        <Alert severity="error">Error: Download Unsuccessful</Alert>
+        <Alert severity="error">Error: File Download Unsuccessful</Alert>
       )}
     </div>
   );

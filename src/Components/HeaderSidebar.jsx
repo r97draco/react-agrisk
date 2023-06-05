@@ -7,7 +7,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { AUTH_ISLOGGEDIN } from "../App";
 import { useAuth } from "../Utils/Auth";
 
-const HeaderInfo = () => {
+/**
+ * HeaderSidebar component displays the header information for sidebar section.
+ * @component
+ *
+ * @returns {JSX.Element} HeaderSidebar component
+ */
+const HeaderSidebar = () => {
   const [isLoggedIn, setIsLoggedIn] = useAtom(AUTH_ISLOGGEDIN);
   const navigate= useNavigate();
 
@@ -44,4 +50,4 @@ const HeaderInfo = () => {
   );
 };
 
-export default HeaderInfo;
+export default HeaderSidebar;

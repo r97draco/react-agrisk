@@ -1,6 +1,7 @@
-import { ThemeOptions } from '@mui/material/styles';
-
-export const themeOptions: ThemeOptions = {
+/**
+ * To manage settings/configs of the custom theme we created for dashboard
+ */
+export const themeOptions = {
   palette: {
     mode: 'light',
     primary: {

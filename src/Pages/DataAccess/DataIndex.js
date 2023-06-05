@@ -1,11 +1,11 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-const DataIndex = () => {
-  return (
-    <div>Data Access
-      <Outlet/>
-    </div>
-  )
-}
+import React from "react";
 
-export default DataIndex
+/**
+ * Index file for Data Route
+ * 
+ * @returns {JSX.Element} - DataIndex component 
+ */
+const DataIndex = () => {
+  return <div>Data Access</div>;
+};
+export default DataIndex;

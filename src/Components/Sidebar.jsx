@@ -17,6 +17,12 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Nav } from "../Layout";
 import HeaderSidebar from "./HeaderSidebar";
 
+/**
+ * Sidebar component displays the navigation and header information for sidebar.
+ * @component
+ *
+ * @returns {JSX.Element} Sidebar component
+ */
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const location = useLocation();

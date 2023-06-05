@@ -26,13 +26,25 @@ import Home from "./Pages/Home";
 
 const theme = createTheme(themeOptions);
 
+/**
+ * Global state atom for checking if the user is logged in.
+ */
 export const AUTH_ISLOGGEDIN = atom(false);
 
+/**
+ * The main component that renders the application.
+ * 
+ * @returns {JSX.Element} App component
+ */
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useAtom(AUTH_ISLOGGEDIN);
   const [status, setStatus] = useState("signin");
   const navigate = useNavigate();
   const auth = useAuth();
+  
+  /**
+   * Handles the logout action.
+   */
   const handleLogout = () => {
     setIsLoggedIn(false);
     auth.logout();

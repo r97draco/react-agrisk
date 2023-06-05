@@ -24,6 +24,16 @@ import { useAuth } from "../Utils/Auth";
 
 const theme = createTheme(themeOptions);
 
+/**
+ * SignIn component displays the sign-in form.
+ * @component
+ *
+ * @param {Object} props - The properties passed to the component
+ * @param {Function} props.setStatus - The function to set the status
+ * @param {Function} props.setLoggedIn - The function to set the logged-in state
+ *
+ * @returns {JSX.Element} SignIn component
+ */
 export default function SignIn({ setStatus, setLoggedIn }) {
   const [radioText, setRadioText] = React.useState("");
   const [usernameText, setUsernameText] = React.useState("");

@@ -5,6 +5,12 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 
+/**
+ * Copyright component displays the copyright
+ * information with a link to Parametrics.ag.
+ *
+ * @returns {JSX.Element} - Copyright component
+ */
 export function Copyright() {
   return (
     <Container maxWidth="sm" align="center">
@@ -22,6 +28,11 @@ export function Copyright() {
   );
 }
 
+/**
+ * Footer component is a component that displays the footer section of the application.
+ *
+ * @returns {JSX.Element} - Footer component
+ */
 export default function Footer() {
   return (
     <Box

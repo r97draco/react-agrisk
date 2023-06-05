@@ -8,11 +8,26 @@ import { useNavigate } from "react-router-dom";
 import { AUTH_ISLOGGEDIN } from "../App";
 import { useAuth } from "../Utils/Auth";
 
+/**
+ * HeaderInfo component displays the header information
+ * @component
+ *
+ * @param {Object} props - The properties passed to the component
+ * @param {Function} props.logout - The logout function
+ *
+ * @returns {JSX.Element} HeaderInfo component
+ */
 const HeaderInfo = ({ logout }) => {
   const [isLoggedIn, setIsLoggedIn] = useAtom(AUTH_ISLOGGEDIN);
   const navigate = useNavigate();
 
   const auth = useAuth();
+  /**
+   * Handles the logout process
+   * Sets isLoggedIn to false, performs logout action, and navigates to the home page
+   *
+   * @returns {void}
+   */
   const handleLogoutAuth = () => {
     setIsLoggedIn(false);
     auth.logout();
@@ -87,6 +102,11 @@ const HeaderInfo = ({ logout }) => {
 
 export default HeaderInfo;
 
+/**
+ * Aglogo returns the svg logo
+ *
+ * @returns {JSX.Element} Aglogo component
+ */
 function Aglogo() {
   return (
     <svg

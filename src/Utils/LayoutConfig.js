@@ -1,4 +1,7 @@
- export const config = {
+/**
+ * To manage settings/configs of the custom layout we created for dashboard
+ */
+export const config = {
   navAnchor: "left",
   navVariant: {
     xs: "temporary",

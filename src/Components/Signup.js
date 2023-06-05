@@ -16,7 +16,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-
 import {
   validEmail,
   validPassword,
@@ -27,6 +26,15 @@ import { themeOptions } from "../Utils/MuiTheme";
 
 const theme = createTheme(themeOptions);
 
+/**
+ * SignUp component displays the sign-up form.
+ * @component
+ *
+ * @param {Object} props - The properties passed to the component
+ * @param {Function} props.setStatus - The function to set the status
+ *
+ * @returns {JSX.Element} SignUp component
+ */
 export default function SignUp({ setStatus }) {
   const [firstNameText, setFirstNameText] = React.useState("");
   const [lastNameText, setLastNameText] = React.useState("");

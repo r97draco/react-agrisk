@@ -14,6 +14,11 @@ import { Alert, FormControl, FormLabel, Stack } from "@mui/material";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import { axiosApiCall, makeApiCall, newApiCall } from "../../Utils/API";
 
+/**
+ * Creates forms, handles error, sends the data to api, receives the file and displays it so that user can download thes file.
+ * 
+ * @returns {JSX.Element} - Datasets1 component 
+ */
 const Datasets1 = () => {
   const [submitted, setSubmitted] = useState(false);
   const [file, setFile] = useState("File Name");
@@ -180,7 +185,14 @@ const Datasets1 = () => {
 };
 export default Datasets1;
 
-
+/**
+ * File component renders a section for downloading and managing a file.
+ * 
+ * @param {Object} param0 - Component props
+ * @param {string} param0.filename - Name of the file to be downloaded
+ * @param {function} param0.setFile - Callback function to update the file state
+ * @returns {JSX.Element} - File component
+ */
 const File = ({ filename, setFile }) => {
   const downloadFile = filename.toString();
 
@@ -236,6 +248,14 @@ const File = ({ filename, setFile }) => {
   );
 };
 
+/**
+* VariableSelection component renders a section for selecting and managing variables.
+*
+* @param {Object} props - Component props
+* @param {Array} props.selectedVariables - Array of selected variables
+* @param {function} props.setSelectedVariables - Callback function to update the selected variables state
+* @returns {JSX.Element} - VariableSelection component
+*/
 const VariableSelection = ({ selectedVariables, setSelectedVariables }) => {
   const Variable = [
     "Cloud cover",
@@ -308,6 +328,14 @@ const VariableSelection = ({ selectedVariables, setSelectedVariables }) => {
   );
 };
 
+/**
+* StatisticComponent component renders a section for selecting and managing statistics.
+* 
+* @param {Object} props - Component props
+* @param {Array} props.selectedStatistics - Array of selected statistics
+* @param {function} props.setSelectedStatistics - Callback function to update the selected statistics state
+* @returns {JSX.Element} - StatisticComponent component
+*/
 const StatisticComponent = ({ selectedStatistics, setSelectedStatistics }) => {
   const statistic = [
     "24 hour maximum",
@@ -375,6 +403,15 @@ const StatisticComponent = ({ selectedStatistics, setSelectedStatistics }) => {
   );
 };
 
+
+/**
+* YearComponent component renders a section for selecting and managing years.
+*
+* @param {Object} props - Component props
+* @param {Array} props.selectedYears - Array of selected years
+* @param {function} props.setSelectedYears - Callback function to update the selected years state
+* @returns {JSX.Element} - YearComponent component
+*/
 const YearComponent = ({ selectedYears, setSelectedYears }) => {
   const startYear = 1979;
   const endYear = 2022;
@@ -431,6 +468,14 @@ const YearComponent = ({ selectedYears, setSelectedYears }) => {
   );
 };
 
+/**
+* MonthComponent component renders a section for selecting and managing months.
+*
+* @param {Object} props - Component props
+* @param {Array} props.selectedMonths - Array of selected months
+* @param {function} props.setSelectedMonths - Callback function to update the selected months state
+* @returns {JSX.Element} - MonthComponent component
+*/
 const MonthComponent = ({ selectedMonths, setSelectedMonths }) => {
   const months = [
     { name: 'January', value: '01' },
@@ -497,6 +542,14 @@ const MonthComponent = ({ selectedMonths, setSelectedMonths }) => {
   );
 };
 
+/**
+* DayComponent component renders a section for selecting and managing days.
+*
+* @param {Object} props - Component props
+* @param {Array} props.selectedDays - Array of selected days
+* @param {function} props.setSelectedDays - Callback function to update the selected days state
+* @returns {JSX.Element} - DayComponent component
+*/
 const DayComponent = ({ selectedDays, setSelectedDays }) => {
   const days = [...Array(31).keys()].map((day) => {
     const dayNumber = day + 1;
@@ -552,6 +605,14 @@ const DayComponent = ({ selectedDays, setSelectedDays }) => {
   );
 };
 
+/**
+* TimeComponent component renders a section for selecting and managing time.
+*
+* @param {Object} props - Component props
+* @param {Array} props.selectedTimes - Array of selected times
+* @param {function} props.setSelectedTimes - Callback function to update the selected time state
+* @returns {JSX.Element} - TimeComponent component
+*/
 const TimeComponent = ({ selectedTimes, setSelectedTimes }) => {
   const times = ["06:00", "09:00", "12:00", "15:00", "18:00"];
 
@@ -610,6 +671,14 @@ const TimeComponent = ({ selectedTimes, setSelectedTimes }) => {
   );
 };
 
+/**
+* GeographicalAreaComponent component renders a section for selecting and managing geographical area.
+*
+* @param {Object} props - Component props
+* @param {Array} props.selectedArea - Array of selected areas
+* @param {function} props.setSelectedArea - Callback function to update the selected area state
+* @returns {JSX.Element} - GeographicalAreaComponent
+*/
 const GeographicalAreaComponent = ({ selectedArea, setSelectedArea }) => {
   const [areaOption, setAreaOption] = useState("wholeRegion");
   const [north, setNorth] = useState(90);
@@ -758,6 +827,11 @@ const GeographicalAreaComponent = ({ selectedArea, setSelectedArea }) => {
   );
 };
 
+/**
+* FormatComponent component renders a section for selecting and managing format type for the download file.
+*
+* @returns {JSX.Element} - FormatComponent
+*/
 const FormatComponent = () => {
   const [selectedFormat, setSelectedFormat] = useState("zip");
 
@@ -790,169 +864,3 @@ const FormatComponent = () => {
     </Box>
   );
 };
-
-// Last working code in case need to go back .
-// const VariableSelection = ({selectedVariables, setSelectedVariables}) => {
-//   const Variable = [
-//     "Cloud cover",
-//     "Precipitation flux",
-//     "Liquid precipitation duration fraction",
-//     "Solid precipitation duration fraction",
-//     "Snow thickness LWE",
-//     "Snow thickness",
-//     "Solar radiation flux",
-//     "Vapour pressure",
-//     "2m temperature",
-//     "10m wind speed",
-//     "2m dewpoint temperature",
-//     "2m relative humidity",
-//   ];
-//   // const [selectedVariables, setSelectedVariables] = useState([]);
-
-//   const handleCheckboxChange = (event) => {
-//     const { value, checked } = event.target;
-//     if (checked) {
-//       setSelectedVariables((prevSelectedVariables) => [
-//         ...prevSelectedVariables,
-//         value,
-//       ]);
-//     } else {
-//       setSelectedVariables((prevSelectedVariables) =>
-//         prevSelectedVariables.filter((variable) => variable !== value)
-//       );
-//     }
-//   };
-
-//   const handleSelectAll = () => {
-//     setSelectedVariables(Variable);
-//   };
-
-//   const handleClearAll = () => {
-//     setSelectedVariables([]);
-//   };
-
-//   return (
-//     <Box className="p-2 mb-3 rounded-md shadow-lg bg-gray-50">
-//       <Typography>Variable</Typography>
-//       <FormLabel>At least one selection must be made</FormLabel>
-//       <div>
-//         {Variable.map((item, index) => (
-//           <FormControlLabel
-//             key={index}
-//             value={item}
-//             name="variable"
-//             className="w-full p-2 lg:w-1/4 md:w-1/3 sm:w-1/2"
-//             control={
-//               <Checkbox
-//                 checked={selectedVariables.includes(item)}
-//                 onChange={handleCheckboxChange}
-//               />
-//             }
-//             label={item}
-//           />
-//         ))}
-//       </div>
-//       <Button onClick={handleClearAll}>Clear All</Button>
-//       <Button onClick={handleSelectAll}>Select All</Button>
-//     </Box>
-//   );
-// };
-
-// const Datasets1 = () => {
-//   const [selectedVariables, setSelectedVariables] = useState([]);
-//   const [selectedArea, setSelectedArea] = useState("");
-//   const [selectedStatistics, setSelectedStatistics] = useState([]);
-//   const [error, setError] = useState(false);
-//   const [variableErr, setVariableErr] = useState(false);
-//   const [areaErr, setAreaErr] = useState(false);
-//   const [statisticErr, setStatisticErr] = useState(false);
-//   const [yearErr, setYearErr] = useState(false);
-//   const [monthErr, setMonthErr] = useState(false);
-//   const [dayErr, setDayErr] = useState(false);
-//   const [timeErr, setTimeErr] = useState(false);
-//   const [formatErr, setFormatErr] = useState(false);
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     const data = new FormData(event.currentTarget);
-//     if(data.get("variable")==="" || data.get("variable")==null)setVariableErr(true);
-//     else setVariableErr(false);
-//     if(data.get("statistic")==="" || data.get("statistic")==null)setStatisticErr(true);
-//     else setStatisticErr(false);
-//     if(data.get("year")==="" || data.get("year")==null)setYearErr(true);
-//     else setYearErr(false);
-//     if(data.get("month")==="" || data.get("month")==null)setMonthErr(true);
-//     else setMonthErr(false);
-//     if(data.get("day")==="" || data.get("day")==null)setDayErr(true);
-//     else setDayErr(false);
-//     if(data.get("time")==="" || data.get("time")==null)setTimeErr(true);
-//     else setTimeErr(false);
-//     if(data.get("area")==="" || data.get("area")==null)setAreaErr(true);
-//     else setAreaErr(false);
-//     if( variableErr || areaErr || statisticErr || yearErr || monthErr || dayErr || timeErr || formatErr )setError(true);
-//     else setError(false);
-//     console.log({
-//       variable: data.get("variable"),
-//       statistic: data.get("statistic"),
-//       year: data.get("year"),
-//       month: data.get("month"),
-//       day: data.get("day"),
-//       time: data.get("time"),
-//       area: data.get("area"),
-//       format: data.get("format"),
-//       // area: {selectedArea},
-//       selectedVar: selectedVariables,
-//       error: error,
-//     });
-//   };
-//   return (
-//     <>
-//       <div className="items-center block m-3 text-left">
-//         <Typography variant="body1">Data Set 1</Typography>
-//         <Box
-//           component="form"
-//           onSubmit={handleSubmit}
-//           sx={{ mt: 3 }}
-//           noValidate
-//           alignContent="center"
-//           justifyContent="center"
-//         >
-//           <FormControl error={error}>
-//             <FormControl error={variableErr}>
-//               <VariableSelection
-//                 selectedVariables={selectedVariables}
-//                 setSelectedVariables={setSelectedVariables}
-//                 setVariableErr={setVariableErr}
-//               />
-//             </FormControl>
-//             <FormControl error={statisticErr}>
-//               <StatisticComponent selectedStatistics={selectedStatistics} setSelectedStatistics={setSelectedStatistics} />
-//             </FormControl>
-//             <FormControl error={yearErr}>
-//               <YearComponent />
-//             </FormControl>
-//             <FormControl error={monthErr}>
-//               <MonthComponent />
-//             </FormControl>
-//             <FormControl error={dayErr}>
-//               <DayComponent />
-//             </FormControl>
-//             <FormControl error={timeErr}>
-//               <TimeComponent />
-//             </FormControl>
-//             <FormControl error={areaErr}>
-//               <GeographicalAreaComponent selectedArea={selectedArea} setSelectedArea={setSelectedArea} />
-//             </FormControl>
-//             <FormControl error={formatErr}>
-//               <FormatComponent />
-//             </FormControl>
-//             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-//               Submit
-//             </Button>
-//             {error && <FormLabel>One of Required Fields is Missing</FormLabel>}
-//             </FormControl>
-//           {  <File />}
-//         </Box>
-//       </div>
-//     </>
-//   );
-// };
