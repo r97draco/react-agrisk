@@ -12,7 +12,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import "../../App.css";
 import { Alert, FormControl, FormLabel, Stack } from "@mui/material";
 import BugReportIcon from "@mui/icons-material/BugReport";
-import { axiosApiCall, makeApiCall, newApiCall } from "../../Utils/API";
 
 /**
  * Creates forms, handles error, sends the data to api, receives the file and displays it so that user can download thes file.
@@ -86,12 +85,6 @@ const Datasets1 = () => {
       payload.area = selectedArea;
     }
     console.log(payload);
-    const endpoint1 = 'https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data';
-    const endpoint2 = 'https://fqvysvv7b4.execute-api.ca-central-1.amazonaws.com/search-era5-gars-data';
-    
-    // makeApiCall(setFile, payload);
-    // newApiCall(setFile, payload);
-    // axiosApiCall(endpoint1, setFile, payload);
   };
 
   return (
@@ -700,12 +693,12 @@ const GeographicalAreaComponent = ({ selectedArea, setSelectedArea }) => {
     const value = event.target.value.trim(); // Remove leading/trailing whitespace
     if (value === "" || value === "-") {
       setNorth(value); // Keep the "-" sign as the input value
-      setSelectedArea([north, value, west, south]);
+      setSelectedArea([value, east, west, south]);
     } else {
       const parsedValue = parseFloat(value);
       if (!isNaN(parsedValue)) {
         setNorth(parsedValue);
-        setSelectedArea([north, parsedValue, west, south]);
+        setSelectedArea([parsedValue, east, west, south]);
       }
     }
   };
@@ -714,12 +707,12 @@ const GeographicalAreaComponent = ({ selectedArea, setSelectedArea }) => {
     const value = event.target.value.trim(); // Remove leading/trailing whitespace
     if (value === "" || value === "-") {
       setWest(value); // Keep the "-" sign as the input value
-      setSelectedArea([north, value, west, south]);
+      setSelectedArea([north, east, value, south]);
     } else {
       const parsedValue = parseFloat(value);
       if (!isNaN(parsedValue)) {
         setWest(parsedValue);
-        setSelectedArea([north, parsedValue, west, south]);
+        setSelectedArea([north, east, parsedValue, south]);
       }
     }
   };
@@ -742,12 +735,12 @@ const GeographicalAreaComponent = ({ selectedArea, setSelectedArea }) => {
     const value = event.target.value.trim(); // Remove leading/trailing whitespace
     if (value === "" || value === "-") {
       setSouth(value); // Keep the "-" sign as the input value
-      setSelectedArea([north, value, west, south]);
+      setSelectedArea([north, east, west, value]);
     } else {
       const parsedValue = parseFloat(value);
       if (!isNaN(parsedValue)) {
         setSouth(parsedValue);
-        setSelectedArea([north, parsedValue, west, south]);
+        setSelectedArea([north, east, west, parsedValue]);
       }
     }
   };
