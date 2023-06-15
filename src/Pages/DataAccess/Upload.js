@@ -1,9 +1,10 @@
-import { Typography } from "@material-ui/core";
+import { CircularProgress, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { Alert } from "@mui/material";
+import axios from "axios";
 
 /**
  * Upload Component renders a file input component to select the file from the device and enables uploading the file to an AWS server using an API.
@@ -12,6 +13,8 @@ import { Alert } from "@mui/material";
  */
 const Upload = () => {
   const [selectedFile, setSelectedFile] = useState();
+  const [loading, setLoading] = useState(false);
+
   const [isUploaded, setIsUploaded] = useState("undefined");
   const [isSelected, setIsSelected] = useState(false);
 
@@ -33,26 +36,82 @@ const Upload = () => {
       </div>
     );
   };
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
     const formData = new FormData();
 
     formData.append("File", selectedFile);
-    console.log("FormData :",formData);
-    const APIEndpoint= 'https://5u8lxhfkbj.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?username="ericknuque"&filename="test_ericknuque_20230601000001.csv"&content="ABC,DEF,XYZ"'
-    fetch(APIEndpoint, {
-      method: "POST",
-      body: formData,
-      mode: 'no-cors',
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("Success:", result);
-        setIsUploaded("Successful");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+    console.log("FormData :", formData);
+    const APIEndpoint =
+      "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?filename=";
+    setLoading(true);
+    const options = {
+      url: APIEndpoint,
+      method: "PUT",
+      formData: formData,
+      params: {
+        username: "ericknuque",
+        filename: selectedFile.name,
+      },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const response = await axios(options);
+      console.log(`Res`, response);
+      if (response.status === 200) {
+        console.log("PUT Request Successful");
+        let preSignedUrl = response.data["presigned-url"];
+        let fields = response.data["fields"];
+        // console.log("FIELDS : ", fields["policy"]);
+        try {
+          const post_options = {
+            method :"POST",
+            url: preSignedUrl,
+            params:{
+              fields: fields,
+            },
+          }
+          // console.log(JSON.stringify(post_options))
+          const response = await axios(post_options);
+          console.log(`Res`, response);
+          if (response.status === 200) {
+            console.log("POST Request Successful");
+            setIsUploaded("Successful");
+          } else {
+            console.error("POST Response is not 200 : ", response.status);
+            setIsUploaded("Unsuccessful");
+          }
+        } catch (error) {
+          console.error("Error in accessing POST API: ", error);
+          setIsUploaded("Unsuccessful");
+        }
+      } else {
+        console.error("Response is not 200 : ", response.status);
         setIsUploaded("Unsuccessful");
-      });
+      }
+    } catch (error) {
+      console.error("Error in accessing PUT API: ", error);
+      setIsUploaded("Unsuccessful");
+    } finally {
+      setLoading(false);
+    }
+
+    // fetch(APIEndpoint, {
+    //   method: "PUT",
+    //   body: formData,
+    // })
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     console.log("Success:", result);
+    //     setIsUploaded("Successful");
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //     setIsUploaded("Unsuccessful");
+    //   })
+    //   .finally(() => setLoading(false));
   };
 
   return (
@@ -73,7 +132,7 @@ const Upload = () => {
           multiple
           onChange={(event) => changeHandler(event)}
           sx={{ width: { xs: "auto", sm: 400 } }}
-          name="password"
+          name="file"
           type="file"
         />
         <Button
@@ -81,9 +140,9 @@ const Upload = () => {
           component="label"
           sx={{ width: 200 }}
           onClick={handleSubmission}
-          disabled={!isSelected}
+          disabled={!isSelected || loading}
         >
-          Upload
+          {loading ? <CircularProgress size={27} /> : "Upload"}
         </Button>
       </Stack>
       {isUploaded === "Successful" && (

@@ -1,4 +1,4 @@
-import { Grid, IconButton, Typography } from "@material-ui/core";
+import { CircularProgress, Grid, IconButton, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -12,6 +12,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import "../../App.css";
 import { Alert, FormControl, FormLabel, Stack } from "@mui/material";
 import BugReportIcon from "@mui/icons-material/BugReport";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 /**
  * Creates forms, handles error, sends the data to api, receives the file and displays it so that user can download thes file.
@@ -20,9 +22,11 @@ import BugReportIcon from "@mui/icons-material/BugReport";
  */
 const Datasets1 = () => {
   const [submitted, setSubmitted] = useState(false);
-  const [file, setFile] = useState("File Name");
+  const [file, setFile] = useState("nofile");
+  const [loading, setLoading] = useState(false);
+  const [preSignedUrl, setPreSignedUrl] = useState("");
   const [selectedVariables, setSelectedVariables] = useState(["cloud_cover"]);
-  const [selectedStatistics, setSelectedStatistics] = useState(["24_hour_maximum"]);
+  const [selectedStatistics, setSelectedStatistics] = useState(["24_hour_mean"]);
   const [selectedYears, setSelectedYears] = useState(['2022']);
   const [selectedMonths, setSelectedMonths] = useState(['01']);
   const [selectedDays, setSelectedDays] = useState(['01']);
@@ -40,7 +44,7 @@ const Datasets1 = () => {
     format: false,
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const variable = data.get("variable");
@@ -75,16 +79,60 @@ const Datasets1 = () => {
     let payload = {
       variable: selectedVariables,
       statistic: selectedStatistics,
-      years: selectedYears,
+      year: selectedYears,
       month: selectedMonths,
       day: selectedDays,
-      time: selectedTimes,
+      // time: selectedTimes,
       format: format,
     };
+    if(selectedVariables.length === 1){
+      payload.variable = selectedVariables[0];
+    }
+    if(selectedStatistics.length === 1){
+      payload.statistic = selectedStatistics[0];
+    }
+    if(selectedYears.length === 1){
+      payload.year = selectedYears[0];
+    }
+    if(selectedMonths.length === 1){
+      payload.month = selectedMonths[0];
+    }
+    if(selectedDays.length === 1){
+      payload.day = selectedDays[0];
+    }
     if (area === 'subRegion') {
       payload.area = selectedArea;
     }
-    console.log(payload);
+    let filter = JSON.stringify(payload) 
+    console.log(filter);
+
+    try {
+      const options={
+        url : "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/search-era5-cds-data",
+        method: "GET",
+        params:{
+          username:"ericknuque",
+          dataset: "sis-agrometeorological-indicators",
+          filter: filter,
+        },
+      }
+      setLoading(true);
+      const response = await axios(options);
+      console.log(`Res`, response);
+      if (response.status === 200) {
+        console.log("Request Successful")
+        setPreSignedUrl(response.data["presigned-url"])
+        setFile(response.data["filename"])
+      } else {
+        setFile("error")
+        console.error("Response is not OK || No file present: ", response.status);
+      }
+    } catch (error) {
+      setFile("error")
+      console.error("Error in accessing API: ", error);
+    } finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -146,8 +194,8 @@ const Datasets1 = () => {
               <FormatComponent />
             </FormControl>
 
-            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-              Submit
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} disabled={loading}>
+            {loading ? <CircularProgress size={27} /> :"Submit"}
             </Button>
             {Object.values(formErrors).some((error) => error) && (
               <>
@@ -170,7 +218,7 @@ const Datasets1 = () => {
               </Alert>
             )}
           </FormControl>
-          <File filename={file} setFile={setFile} />
+          <File filename={file} setFile={setFile} preSignedUrl={preSignedUrl} />
         </Box>
       </div>
     </>
@@ -186,7 +234,7 @@ export default Datasets1;
  * @param {function} param0.setFile - Callback function to update the file state
  * @returns {JSX.Element} - File component
  */
-const File = ({ filename, setFile }) => {
+const File = ({ filename, setFile, preSignedUrl }) => {
   const downloadFile = filename.toString();
 
   return (
@@ -220,7 +268,7 @@ const File = ({ filename, setFile }) => {
           {downloadFile !== "error" && (
             <>
               {" "}
-              <Button variant="contained" component="label" sx={{ width: 150 }}>
+              <Button component={Link} to={preSignedUrl} variant="contained" sx={{ width: 150 }}   target="_blank">
                 Download
                 <DownloadIcon />
               </Button>
