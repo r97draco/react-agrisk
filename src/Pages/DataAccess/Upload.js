@@ -62,9 +62,9 @@ const Upload = () => {
       console.log(`Res`, response);
       if (response.status === 200) {
         console.log("PUT Request Successful");
-        let preSignedUrl = response.data["presigned-url"];
+        let preSignedUrl = response.data["url"];
+        console.log("preSignedUrl : ",preSignedUrl);
         let fields = response.data["fields"];
-        // console.log("FIELDS : ", fields["policy"]);
         try {
           const post_options = {
             method :"POST",
@@ -72,15 +72,15 @@ const Upload = () => {
             params:{
               fields: fields,
             },
+            formData: formData,
           }
-          // console.log(JSON.stringify(post_options))
-          const response = await axios(post_options);
+          const res = await axios(post_options);
           console.log(`Res`, response);
-          if (response.status === 200) {
+          if (res.status === 200) {
             console.log("POST Request Successful");
             setIsUploaded("Successful");
           } else {
-            console.error("POST Response is not 200 : ", response.status);
+            console.error("POST Response is not 200 : ", res.status);
             setIsUploaded("Unsuccessful");
           }
         } catch (error) {
@@ -97,21 +97,6 @@ const Upload = () => {
     } finally {
       setLoading(false);
     }
-
-    // fetch(APIEndpoint, {
-    //   method: "PUT",
-    //   body: formData,
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log("Success:", result);
-    //     setIsUploaded("Successful");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //     setIsUploaded("Unsuccessful");
-    //   })
-    //   .finally(() => setLoading(false));
   };
 
   return (

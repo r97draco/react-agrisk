@@ -33,7 +33,9 @@ const Download = () => {
   const [fileInput, setFileInput] = useState("");
   const [downloadFile, setDowloadFile] = useState("");
   const [isDownloaded, setIsDownloaded] = useState("undefined");
-
+  /**
+   * searchFile function is responsible for fetching the filelist from the API asynchronously.
+   */
   const searchFile = async () => {
     setLoading(true);
     const URL =
@@ -50,9 +52,6 @@ const Download = () => {
       if (response.data["filelist"].length > 0) setFile(true);
       if (response.status === 200) {
         setFileList(response.data);
-        // fileList.status = response.data["status"];
-        // fileList.count = response.data["count"];
-        // fileList.filelist = response.data["filelist"];
         setFilteredList(response.data["filelist"]);
       }
     } catch (error) {
@@ -65,59 +64,45 @@ const Download = () => {
   /**
    * handleDownload function is responsible for initiating the file download process from an API asynchronously.
    */
-  // const setDownloadLink = (selectedItem) => {
-  //   if (selectedItem === selected) {
-  //     setSelected(null);
-  //     setPresigedURL("");
-  //   } else {
-  //     setSelected(selectedItem);
-  //     setPresigedURL(selectedItem); // Replace this with your logic to get the presigned URL
-  //   }
-  // };
   const handleDownload = async (selectedItem) => {
     if (selectedItem === selected) {
       setSelected(null);
       setPreSignedUrl();
     } else {
-    setSelected(selectedItem);
-    
-    // setPreSignedUrl();
-    setDownLoading(true);
-    const URL =
-      "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data";
+      setSelected(selectedItem);
+      setDownLoading(true);
+      const URL =
+        "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/download-era5-gars-data";
 
-    try {
-      const response = await axios({
-        url: URL,
-        method: "GET",
-        params: {
-          username: "rommelnuque",
-          filename: selectedItem,
-        },
-      });
-      console.log(downloadFile);
-      console.log(`Res`, response);
-      // console.log(`Content Length: `, response.data["size"]);
-
-      if (response.status === 200) {
-        let signedUrl = response.data["presigned-url"];
-        setPreSignedUrl(signedUrl);
-        // setIsDownloaded("Successful");
-      } else {
-        console.error(
-          "Response is not OK || No file present:",
-          response.status
-        );
+      try {
+        const response = await axios({
+          url: URL,
+          method: "GET",
+          params: {
+            username: "rommelnuque",
+            filename: selectedItem,
+          },
+        });
+        console.log(selectedItem);
+        console.log(`Res`, response);
+        if (response.status === 200) {
+          let signedUrl = response.data["presigned-url"];
+          setPreSignedUrl(signedUrl);
+        } else {
+          console.error(
+            "Response is not OK || No file present:",
+            response.status
+          );
+          setIsDownloaded("Unsuccessful");
+          throw new Error("Response is not OK");
+        }
+      } catch (error) {
         setIsDownloaded("Unsuccessful");
-        throw new Error("Response is not OK");
+        console.error("Error in file download:", error);
+      } finally {
+        setDownLoading(false);
       }
-    } catch (error) {
-      setIsDownloaded("Unsuccessful");
-      console.error("Error in file download:", error);
-    } finally {
-      setDownLoading(false);
     }
-  }
   };
   const [filteredList, setFilteredList] = useState(fileList["filelist"]);
   const filterList = (text) => {
@@ -159,19 +144,10 @@ const Download = () => {
           component="label"
           sx={{ width: 200 }}
           onClick={searchFile}
-          disabled={loading}
+          disabled={loading && preSignedUrl}
         >
           {loading ? <CircularProgress size={27} /> : "Search File"}
         </Button>
-        {/* <Button
-          variant="contained"
-          onClick={handleDownload}
-          component="label"
-          sx={{ width: 200 }}
-          disabled={loading}
-        >
-          {loading ? <CircularProgress size={27} /> : "Download"}
-        </Button> */}
         <Button
           component={Link}
           to={preSignedUrl}
@@ -192,45 +168,46 @@ const Download = () => {
         <Alert severity="error">Error: File Download Unsuccessful</Alert>
       )}
       {file && (
-        <Typography variant="body1" align="left" className="p-2">
-          Total Results : {filteredList.length}
-        </Typography>
+        <FilteredListRender
+          filteredList={filteredList}
+          handleDownload={handleDownload}
+          selected={selected}
+        />
       )}
-      {/* {file &&
-        filteredList.map((item, index) => (
-          <FormControlLabel
-            key={index}
-            value={item}
-            className="w-full p-2"
-            control={<Checkbox onChange={() => handleDownload(item)} />}
-            label={
-              <span>
-                {item} <FileCopyOutlined />
-              </span>
-            }
-          />
-        ))}
-      ----------------------------------------------------- */}
-      {file &&
-        filteredList.map((item, index) => (
-          <FormControlLabel
-            key={index}
-            value={item}
-            className="w-full p-2"
-            control={
-              <Checkbox
-                checked={selected === item}
-                onChange={() => handleDownload(item)}
-              />
-            }
-            label={
-              <span>
-                {item} <FileCopyOutlined />
-              </span>
-            }
-          />
-        ))}
     </div>
   );
 };
 export default Download;
+
+/**
+ * FilteredListRender renders a list of the files fetched from from an API which user can click on and download it to local machine.
+ *
+ * @returns {JSX.Element} - FilteredListRender Fragment
+ */
+const FilteredListRender = ({ filteredList, handleDownload, selected }) => {
+  return (
+    <>
+      <Typography variant="body1" align="left" className="p-2">
+        Total Results : {filteredList.length}
+      </Typography>
+      {filteredList.map((item, index) => (
+      <FormControlLabel
+        key={index}
+        value={item}
+        className="w-full p-2"
+        control={
+          <Checkbox
+            checked={selected === item}
+            onChange={() => handleDownload(item)}
+          />
+        }
+        label={
+          <span>
+            {item} <FileCopyOutlined />
+          </span>
+        }
+      />
+      ))}
+    </>
+  );
+};
