@@ -42,12 +42,12 @@ const Upload = () => {
     formData.append("File", selectedFile);
     console.log("FormData :", formData);
     const APIEndpoint =
-      "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/upload-era5-gars-data?filename=";
+      "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/upload-via-presigned-url";
     setLoading(true);
     const options = {
       url: APIEndpoint,
-      method: "PUT",
-      formData: formData,
+      method: "GET",
+      // formData: formData,
       params: {
         username: "ericknuque",
         filename: selectedFile.name,
@@ -61,28 +61,48 @@ const Upload = () => {
       const response = await axios(options);
       console.log(`Res`, response);
       if (response.status === 200) {
-        console.log("PUT Request Successful");
+        console.log("GET Request Successful");
         let preSignedUrl = response.data["url"];
-        console.log("preSignedUrl : ",preSignedUrl);
+        console.log("preSignedUrl : ", preSignedUrl);
         let fields = response.data["fields"];
-        try {
-          const post_options = {
-            method :"POST",
-            url: preSignedUrl,
-            params:{
-              fields: fields,
-            },
-            formData: formData,
-          }
-          const res = await axios(post_options);
-          console.log(`Res`, response);
-          if (res.status === 200) {
-            console.log("POST Request Successful");
-            setIsUploaded("Successful");
-          } else {
-            console.error("POST Response is not 200 : ", res.status);
-            setIsUploaded("Unsuccessful");
-          }
+        formData.append("key", selectedFile.name);
+        formData.append("x-amz-signature", fields["x-amz-signature"]);
+        formData.append("x-amz-security-token", fields["x-amz-security-token"]);
+        formData.append("x-amz-date", fields["x-amz-date"]);
+        formData.append("x-amz-credential", fields["x-amz-credential"]);
+        formData.append("x-amz-algorithm", fields["x-amz-algorithm"]);
+        formData.append("policy", fields["policy"]);
+        const config = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+        try{
+            axios.post(preSignedUrl, formData, config).then(response=>{
+            console.log(response)
+          }).catch(error=>{console.log(error)})
+        //   const post_options = {
+        //     method: "POST",
+        //     url: preSignedUrl,
+        //     key: selectedFile.name,
+        //     ...fields,
+        //     file: formData,
+        //     headers: {
+        //       "Content-Type": "multipart/form-data",
+        //     },
+        //   };
+          // console.table(post_options);
+          
+          
+          // const res = await axios(post_options);
+          // console.log(`Res`, response);
+          // if (res.status === 200) {
+          //   console.log("POST Request Successful");
+          //   setIsUploaded("Successful");
+          // } else {
+          //   console.error("POST Response is not 200 : ", res.status);
+          //   setIsUploaded("Unsuccessful");
+          // }
         } catch (error) {
           console.error("Error in accessing POST API: ", error);
           setIsUploaded("Unsuccessful");
@@ -92,7 +112,7 @@ const Upload = () => {
         setIsUploaded("Unsuccessful");
       }
     } catch (error) {
-      console.error("Error in accessing PUT API: ", error);
+      console.error("Error in accessing GET API: ", error);
       setIsUploaded("Unsuccessful");
     } finally {
       setLoading(false);

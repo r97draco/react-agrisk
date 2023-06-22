@@ -110,7 +110,7 @@ const Nav = ({
           )}
         </div>
       </Drawer>
-      <Grow in={open && navVariant === 'temporary' && collapsedIcon}>
+      <Grow in={open && navVariant === 'temporary' && collapsed}>
         <IconButton
           className={classes.closeButton}
           style={{ left: navWidth + 16 }}
