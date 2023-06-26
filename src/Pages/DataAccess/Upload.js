@@ -6,6 +6,63 @@ import TextField from "@mui/material/TextField";
 import { Alert } from "@mui/material";
 import axios from "axios";
 
+const getRequest = async (selectedFile, setIsUploaded) => {
+  const APIEndpoint =
+    "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/upload-via-presigned-url";
+  const options = {
+    url: APIEndpoint,
+    method: "GET",
+    params: {
+      username: "ericknuque",
+      filename: selectedFile.name,
+    },
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  const response = await axios(options);
+  console.log(`Res`, response);
+  if (response.status === 200) {
+    console.log("GET Request Successful");
+  } else {
+    console.error("Response is not 200 : ", response.status);
+    setIsUploaded("Unsuccessful");
+  }
+  return response;
+};
+
+const postRequest = async (formData, get_response, setIsUploaded) => {
+  let preSignedUrl = get_response.data["url"];
+  console.log("preSignedUrl : ", preSignedUrl);
+  let fields = get_response.data["fields"];
+  try {
+    const post_options = {
+      method: "POST",
+      url: preSignedUrl,
+      ...fields,
+      file: formData,
+      "Content-Type": "multipart/form-data",
+    };
+    console.table(post_options);
+    // console.log(JSON.stringify(post_options));
+    const res = await axios(post_options);
+    console.log(`Res`, res);
+    if (res.status === 200) {
+      console.log("POST Request Successful");
+      setIsUploaded("Successful");
+      return res.status;
+    } else {
+      console.error("POST Response is not 200 : ", res.status);
+      setIsUploaded("Unsuccessful");
+    }
+  } catch (error) {
+    console.error("Error in accessing POST API: ", error);
+    setIsUploaded("Unsuccessful");
+  }
+};
+
+
+
 /**
  * Upload Component renders a file input component to select the file from the device and enables uploading the file to an AWS server using an API.
  *
@@ -38,78 +95,12 @@ const Upload = () => {
   };
   const handleSubmission = async () => {
     const formData = new FormData();
-
-    formData.append("File", selectedFile);
-    console.log("FormData :", formData);
-    const APIEndpoint =
-      "https://hmtrekg8w0.execute-api.ca-central-1.amazonaws.com/upload-via-presigned-url";
+    formData.append("file", selectedFile);
     setLoading(true);
-    const options = {
-      url: APIEndpoint,
-      method: "GET",
-      // formData: formData,
-      params: {
-        username: "ericknuque",
-        filename: selectedFile.name,
-      },
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
-
     try {
-      const response = await axios(options);
-      console.log(`Res`, response);
-      if (response.status === 200) {
-        console.log("GET Request Successful");
-        let preSignedUrl = response.data["url"];
-        console.log("preSignedUrl : ", preSignedUrl);
-        let fields = response.data["fields"];
-        formData.append("key", selectedFile.name);
-        formData.append("x-amz-signature", fields["x-amz-signature"]);
-        formData.append("x-amz-security-token", fields["x-amz-security-token"]);
-        formData.append("x-amz-date", fields["x-amz-date"]);
-        formData.append("x-amz-credential", fields["x-amz-credential"]);
-        formData.append("x-amz-algorithm", fields["x-amz-algorithm"]);
-        formData.append("policy", fields["policy"]);
-        const config = {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        };
-        try{
-            axios.post(preSignedUrl, formData, config).then(response=>{
-            console.log(response)
-          }).catch(error=>{console.log(error)})
-        //   const post_options = {
-        //     method: "POST",
-        //     url: preSignedUrl,
-        //     key: selectedFile.name,
-        //     ...fields,
-        //     file: formData,
-        //     headers: {
-        //       "Content-Type": "multipart/form-data",
-        //     },
-        //   };
-          // console.table(post_options);
-          
-          
-          // const res = await axios(post_options);
-          // console.log(`Res`, response);
-          // if (res.status === 200) {
-          //   console.log("POST Request Successful");
-          //   setIsUploaded("Successful");
-          // } else {
-          //   console.error("POST Response is not 200 : ", res.status);
-          //   setIsUploaded("Unsuccessful");
-          // }
-        } catch (error) {
-          console.error("Error in accessing POST API: ", error);
-          setIsUploaded("Unsuccessful");
-        }
-      } else {
-        console.error("Response is not 200 : ", response.status);
-        setIsUploaded("Unsuccessful");
+      const get_response = await getRequest(selectedFile, setIsUploaded);
+      if (get_response.status === 200) {
+        await postRequest(formData, get_response, setIsUploaded);
       }
     } catch (error) {
       console.error("Error in accessing GET API: ", error);
@@ -160,3 +151,37 @@ const Upload = () => {
   );
 };
 export default Upload;
+
+
+// const postRequest_version2 = async (formData, get_response, setIsUploaded) => {
+//   let fields = get_response.data["fields"];
+//   formData.append("key", fields["key"]);
+//   formData.append("x-amz-signature", fields["x-amz-signature"]);
+//   formData.append("x-amz-security-token", fields["x-amz-security-token"]);
+//   formData.append("x-amz-date", fields["x-amz-date"]);
+//   formData.append("x-amz-credential", fields["x-amz-credential"]);
+//   formData.append("x-amz-algorithm", fields["x-amz-algorithm"]);
+//   formData.append("policy", fields["policy"]);
+//   const config = {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//   };
+//   axios
+//     .post(get_response.data["url"], formData, config)
+//     .then((res) => {
+//       console.log(res);
+//       if (res.status === 200) {
+//         console.log("POST Request Successful");
+//         setIsUploaded("Successful");
+//         return res.status;
+//       } else {
+//         console.error("POST Response is not 200 : ", res.status);
+//         setIsUploaded("Unsuccessful");
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Error in accessing POST API: ", error);
+//       setIsUploaded("Unsuccessful");
+//     });
+// };
