@@ -45,7 +45,7 @@ const Download = () => {
         url: URL,
         method: "GET",
         params: {
-          username: "rommelnuque",
+          username: "ericknuque",
         },
       });
       console.log("Res from search", response);
@@ -79,7 +79,7 @@ const Download = () => {
           url: URL,
           method: "GET",
           params: {
-            username: "rommelnuque",
+            username: "ericknuque",
             filename: selectedItem,
           },
         });
